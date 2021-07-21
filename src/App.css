@@ -1,0 +1,27 @@
+.App {
+  text-align: center;
+}
+
+.biconomy-logo {
+  pointer-events: none;
+}
+
+.assetContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.headerRow {
+  display: flex;
+  flex-direction: row
+}
+
+.assetRow {
+  display: flex;
+  flex-direction: row
+}
+
+.rowCell {
+  padding: 10px;
+  border: 1px solid black;
+}
