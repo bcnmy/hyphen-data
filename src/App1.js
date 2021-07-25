@@ -26,14 +26,15 @@ const tokensQuery = `
   query {
     fundsSentToUsers (orderBy: timestamp, orderDirection: desc, first: ${number}) {
         id
-        asset
+        tokenAddress
         amount
-        target
-        LpFee
+        receiver
+        lpFee
         timestamp
-        FeeEarned
-        input
+        feeEarned
         gasPrice
+    	depositHash
+        transferredAmount
     }
   }
 `
@@ -60,9 +61,12 @@ function App() {
     const classes = useStyles();
     const [assetSent, setAssetSent] = useState([]);
 
-    useEffect(async ()=>{
-        let response = await getAssetsSent();
-        setAssetSent(response.fundsSentToUsers);
+    useEffect(() => {
+        async function fetchData() {
+            let response = await getAssetsSent();
+            setAssetSent(response.fundsSentToUsers);
+        }
+        fetchData();
     }, []);
 
     let printDate = (epochTime) => {
@@ -81,36 +85,33 @@ function App() {
             <TableContainer component={Paper}>
                 <Table className={classes.table} aria-label="simple table">
                     <TableHead>
-                    <TableRow>
-                        <TableCell>Deposit Hash</TableCell>
-                        <TableCell align="center">Amount Transferred</TableCell>
-                        <TableCell>Exit Hash</TableCell>
-                        <TableCell align="center">Token Address</TableCell>
-                        <TableCell align="center">Amount Recieved</TableCell>
-                        <TableCell align="center">Transfer GasPrice</TableCell>
-                        <TableCell align="center">Receiver</TableCell>
-                        <TableCell align="center">Admin Fee</TableCell>
-                        <TableCell align="center">Exit Time</TableCell>
-                        <TableCell align="center">Fee Earned</TableCell>
-                    </TableRow>
+                        <TableRow>
+                            <TableCell>Deposit Hash</TableCell>
+                            <TableCell align="center">Amount Transferred</TableCell>
+                            <TableCell>Exit Hash</TableCell>
+                            <TableCell align="center">Token Address</TableCell>
+                            <TableCell align="center">Amount Recieved</TableCell>
+                            <TableCell align="center">Transfer GasPrice</TableCell>
+                            <TableCell align="center">Receiver</TableCell>
+                            <TableCell align="center">Admin Fee</TableCell>
+                            <TableCell align="center">Exit Time</TableCell>
+                            <TableCell align="center">Fee Earned</TableCell>
+                        </TableRow>
                     </TableHead>
+
                     <TableBody>
-                    
                     {assetSent.map((row) => (
                         <TableRow key={row.name}>
-                        <TableCell component="th" scope="row">
-                            {(decodeInput(row.input)[3].value)}
-                        </TableCell>
-                        <TableCell align="left">{(decodeInput(row.input)[1].value)/Math.pow(10,config.tokenInfo[row.asset].decimal)}</TableCell>
-                        <TableCell align="left">{row.id}</TableCell>
-                        <TableCell align="left">{config.tokenInfo[row.asset].name}</TableCell>
-                        <TableCell align="left">{(row.amount/Math.pow(10,config.tokenInfo[row.asset].decimal))}</TableCell>
-                        <TableCell align="center">{row.gasPrice/1000000000}</TableCell>
-                        <TableCell align="left">{row.target}</TableCell>
-                        <TableCell align="left">{row.LpFee/100} %</TableCell>
-                        <TableCell align="left">{printDate(row.timestamp)}</TableCell>
-                        {/* {console.log(row.FeeEarned/Math.pow(10,18))} */}
-                        <TableCell align="left">{(decodeInput(row.input)[1].value * (row.LpFee/10000))/Math.pow(10,config.tokenInfo[row.asset].decimal)}</TableCell>
+                            <TableCell align="left">{(row.depositHash)}</TableCell>
+                            <TableCell align="left">{row.amount/Math.pow(10,config.tokenInfo[row.tokenAddress].decimal)}</TableCell>
+                            <TableCell align="left">{row.id}</TableCell>
+                            <TableCell align="left">{config.tokenInfo[row.tokenAddress].name}</TableCell>
+                            <TableCell align="left">{(row.transferredAmount/Math.pow(10,config.tokenInfo[row.tokenAddress].decimal))}</TableCell>
+                            <TableCell align="center">{row.gasPrice/1000000000}</TableCell>
+                            <TableCell align="left">{row.receiver}</TableCell>
+                            <TableCell align="left">{row.lpFee/100} %</TableCell>
+                            <TableCell align="left">{printDate(row.timestamp)}</TableCell>
+                            <TableCell align="left">{row.feeEarned/Math.pow(10,config.tokenInfo[row.tokenAddress].decimal)}</TableCell>
                         </TableRow>
                     ))}
                     </TableBody>

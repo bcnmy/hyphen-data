@@ -1,163 +1,193 @@
-import React, { useState, useEffect } from "react";
 import "./App.css";
-import { ethers, BigNumber } from "ethers";
-const { config } = require("./config");
+import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
+import { useEffect, useState } from 'react';
+import Button from "@material-ui/core/Button";
+import { makeStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+let { config } = require("./config");
 
-// let lpManagerGoerli, lpManagerMumbai;
-let goerliProvider, mumbaiProvider;
-let erc20Goerli_USDC, erc20Goerli_USDT, erc20Goerli_DAI, erc20Mumbai_USDC, erc20Mumbai_USDT, erc20Mumbai_DAI;
+const abiDecoder = require('abi-decoder');
+abiDecoder.addABI(config.LP_MANAGER_ABI);
 
+const useStyles = makeStyles({
+  table: {
+    minWidth: 650,
+  },
+});
+
+const ETHEREUM_URL = "https://api.thegraph.com/subgraphs/name/divyan73/lpmanagergoerli";
+const MATIC_URL = "https://api.thegraph.com/subgraphs/name/divyan73/lpmanagermumbai";
+
+const ethereumGraphClient = new ApolloClient({
+    uri: ETHEREUM_URL,
+    cache: new InMemoryCache()
+});
+
+const maticGraphClient = new ApolloClient({
+    uri: MATIC_URL,
+    cache: new InMemoryCache()
+});
+
+let getDepositData = (depositHash) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let data = await maticGraphClient.query({
+                query: gql(`
+                query {
+                    fundsDepositeds(where: {id: "${depositHash}"}) {
+                        id
+                        from
+                        toChainId
+                        timestamp
+                    }
+                }
+              `)
+            });
+            resolve(data.data.fundsDepositeds[0]);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
+let getTransferData = (depositHash) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let data = await ethereumGraphClient.query({
+                query: gql(`
+                query {
+                    fundsSentToUsers(where: {depositHash: "${depositHash}"}) {
+                        id
+                        tokenAddress
+                        amount
+                        receiver
+                        lpFee
+                        timestamp
+                        feeEarned
+                        gasPrice
+                        depositHash
+                        transferredAmount
+                    }
+                }
+              `)
+            });
+            resolve(data.data.fundsSentToUsers[0]);
+        } catch(error) {
+            reject(error);
+        }
+    })
+}
 function App() {
+    const classes = useStyles();
+    const [transferData, setTransferData] = useState([]);
+    const [depositHash, setDepositHash] = useState("");
 
-    const [goerliUsdc, setGoerliUsdc] = useState([]);
-    const [goerliUsdt, setGoerliUsdt] = useState([]);
-    const [goerliDai, setGoerliDai] = useState([]);
+    let searchDepositHash = async () => {
+        let response = {}
+        let depositData = await getDepositData(depositHash);
+        response.depositTimestamp = depositData.timestamp
+        response.sender = depositData.from
 
-    const [mumbaiUsdc, setMumbaiUsdc] = useState([]);
-    const [mumbaiUsdt, setMumbaiUsdt] = useState([]);
-    const [mumbaiDai, setMumbaiDai] = useState([]);
-
-    useEffect(() => {
-        goerliProvider = new ethers.providers.JsonRpcProvider(config.goerliRpc);
-        mumbaiProvider = new ethers.providers.JsonRpcProvider(config.mumbaiRpc);
-
-        // lpManagerGoerli = new ethers.Contract(
-        //     config.LP_MANAGER_ABI,
-        //     config.contractAddress[5],
-        //     goerliProvider
-        // );
-        // lpManagerMumbai = new ethers.Contract(
-        //     config.LP_MANAGER_ABI,
-        //     config.contractAddress[80001],
-        //     mumbaiProvider
-        // );
-
-        erc20Goerli_USDC = new ethers.Contract(
-            config.supportedToken[5]["USDC"],
-            config.ERC20_ABI,
-            goerliProvider
-        );
-
-        erc20Goerli_USDT = new ethers.Contract(
-            config.supportedToken[5]["USDT"],
-            config.ERC20_ABI,
-            goerliProvider
-        );
-        erc20Goerli_DAI = new ethers.Contract(
-            config.supportedToken[5]["DAI"],
-            config.ERC20_ABI,
-            goerliProvider
-        );
-
-        
-        erc20Mumbai_USDC = new ethers.Contract(
-            config.supportedToken[80001]["USDC"],
-            config.ERC20_ABI,
-            mumbaiProvider
-        );
-        erc20Mumbai_USDT = new ethers.Contract(
-            config.supportedToken[80001]["USDT"],
-            config.ERC20_ABI,
-            mumbaiProvider
-        );
-        erc20Mumbai_DAI = new ethers.Contract(
-            config.supportedToken[80001]["DAI"],
-            config.ERC20_ABI,
-            mumbaiProvider
-        );
-
-        getUSDCBalance(5);
-        getUSDTBalance(5);
-        getDAIBalance(5);
-
-        getUSDCBalance(80001);
-        getUSDTBalance(80001);
-        getDAIBalance(80001);
-    }, []);
-
-    let getUSDCBalance = async(networkId) => {
-        if(networkId === 5 && erc20Goerli_USDC){
-            let result = await erc20Goerli_USDC.balanceOf(config.contractAddress[networkId]);
-            if (result) {
-                console.log(result.toString()/BigNumber.from(10).pow(config.tokenInfo[config.supportedToken[networkId]["USDC"]].decimal).toString());
-            } else {
-                console.log("error")
-            }
-            setGoerliUsdc(result.toString()/BigNumber.from(10).pow(config.tokenInfo[config.supportedToken[networkId]["USDC"]].decimal).toString());
-        }
-
-        if(networkId === 80001 && erc20Mumbai_USDC){
-            let result = await erc20Mumbai_USDC.balanceOf(config.contractAddress[networkId]);
-            if (result) {
-                console.log(config.supportedToken[networkId]["USDC"])
-                console.log(config.tokenInfo[config.supportedToken[networkId]["USDC"]].decimal);
-                console.log(result.toString()/BigNumber.from(10).pow(config.tokenInfo[config.supportedToken[networkId]["USDC"]].decimal).toString());
-            } else {
-                console.log("error")
-            }
-            setMumbaiUsdc(result.toString()/BigNumber.from(10).pow(config.tokenInfo[config.supportedToken[networkId]["USDC"]].decimal).toString());
-        }
+        let transferData = await getTransferData(depositHash);
+        response.amountTransferred = transferData.amount
+        response.exitHash = transferData.id
+        response.depositHash = transferData.depositHash
+        response.tokenAddress = transferData.tokenAddress
+        response.amountReceived = transferData.transferredAmount
+        response.receiver = transferData.receiver
+        response.LpFeePer = transferData.lpFee
+        response.feeEarned = transferData.feeEarned
+        response.exitTimestamp = transferData.timestamp
+        response.gasPrice = transferData.gasPrice
+                    
+        setTransferData(response);
     }
 
-    let getUSDTBalance = async(networkId) => {
-        if(networkId === 5 && erc20Goerli_USDT){
-            let result = await erc20Goerli_USDT.balanceOf(config.contractAddress[networkId]);
-            if (result) {
-                console.log(result.toString()/BigNumber.from(10).pow(config.tokenInfo[config.supportedToken[networkId]["USDT"]].decimal).toString());
-            } else {
-                console.log("error")
-            }
-            setGoerliUsdt(result.toString()/BigNumber.from(10).pow(config.tokenInfo[config.supportedToken[networkId]["USDT"]].decimal).toString());
-        }
-        if(networkId === 80001 && erc20Mumbai_USDT){
-            let result = await erc20Mumbai_USDT.balanceOf(config.contractAddress[networkId]);
-            if (result) {
-                console.log(result.toString()/BigNumber.from(10).pow(config.tokenInfo[config.supportedToken[networkId]["USDT"]].decimal).toString());
-            } else {
-                console.log("error")
-            }
-            setMumbaiUsdt(result.toString()/BigNumber.from(10).pow(config.tokenInfo[config.supportedToken[networkId]["USDT"]].decimal).toString());
-        }
+    let printDate = (epochTime) => {
+        let d = new Date(epochTime*1000);
+        return d.toLocaleDateString() + " " + d.toLocaleTimeString();
     }
 
-    let getDAIBalance = async(networkId) => {
-        if(networkId === 5 && erc20Goerli_DAI){
-            let result = await erc20Goerli_DAI.balanceOf(config.contractAddress[networkId]);
-            if (result) {
-                console.log(result.toString()/BigNumber.from(10).pow(config.tokenInfo[config.supportedToken[networkId]["DAI"]].decimal).toString());
-            } else {
-                console.log("error")
-            }
-            setGoerliDai(result.toString()/BigNumber.from(10).pow(config.tokenInfo[config.supportedToken[networkId]["DAI"]].decimal).toString());
-        }
-
-        if(networkId === 80001 && erc20Mumbai_DAI){
-            let result = await erc20Mumbai_DAI.balanceOf(config.contractAddress[networkId]);
-            if (result) {
-                console.log(result.toString()/BigNumber.from(10).pow(config.tokenInfo[config.supportedToken[networkId]["DAI"]].decimal).toString());
-            } else {
-                console.log("error")
-            }
-            setMumbaiDai(result.toString()/BigNumber.from(10).pow(config.tokenInfo[config.supportedToken[networkId]["DAI"]].decimal).toString());
-        }
-    }
+    const onHashChange = event => {
+        setDepositHash(event.target.value);
+    };
 
     return (
         <div className="App">
-            <div> Available Liquidity </div>
-            <br/>
-
-            <div><u>Goerli</u></div> 
-            <div>USDC: {goerliUsdc}</div>
-            <div>USDT: {goerliUsdt}</div>
-            <div>DAI: {goerliDai}</div>
-            <br/>
-            <div><u>Mumbai</u></div> 
-            <div>USDC: {mumbaiUsdc}</div>
-            <div>USDT: {mumbaiUsdt}</div>
-            <div>DAI: {mumbaiDai}</div>
+             <input
+                type="text"
+                placeholder="Enter your quote"
+                onChange={onHashChange}
+                value={depositHash}
+            />
+            <Button variant="contained" color="primary" onClick={searchDepositHash} style={{ marginLeft: "10px" }}>
+                Submit
+            </Button>
+            <TableContainer component={Paper}>
+                <Table className={classes.table} aria-label="simple table">
+                {transferData.length !== 0 && 
+                    <TableHead>
+                    <TableRow>
+                        <TableCell align="left" className="title">Deposit Hash</TableCell>
+                        <TableCell align="left">{transferData.depositHash}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell align="left">Amount Transferred</TableCell>
+                        <TableCell align="left">{(transferData.amountTransferred)/Math.pow(10,config.tokenInfo[transferData.tokenAddress].decimal)}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell align="left">Deposit Time</TableCell>
+                        <TableCell align="left">{printDate(transferData.depositTimestamp)}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell align="left">Sender</TableCell>
+                        <TableCell align="left">{transferData.sender}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell align="left">Exit Hash</TableCell>
+                        <TableCell align="left">{transferData.exitHash}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell align="left">Token</TableCell>
+                        <TableCell align="left">{config.tokenInfo[transferData.tokenAddress].name}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell align="left">Amount Recieved</TableCell>
+                        <TableCell align="left">{(transferData.amountReceived/Math.pow(10,config.tokenInfo[transferData.tokenAddress].decimal))}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell align="left">Transfer GasPrice</TableCell>
+                        <TableCell align="left">{transferData.gasPrice/1000000000}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell align="left">Receiver</TableCell>
+                        <TableCell align="left">{transferData.receiver}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell align="left">Admin Fee</TableCell>
+                        <TableCell align="left">{transferData.LpFeePer/100} %</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell align="left">Exit Time</TableCell>
+                        <TableCell align="left">{printDate(transferData.exitTimestamp)}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell align="left">Fee Earned</TableCell>
+                        <TableCell align="left">{(transferData.feeEarned)/Math.pow(10,config.tokenInfo[transferData.tokenAddress].decimal)}</TableCell>
+                    </TableRow>
+                    </TableHead>
+                }
+                </Table>
+            </TableContainer>
+            
         </div>
-  );
+    );
 }
 
 export default App;
