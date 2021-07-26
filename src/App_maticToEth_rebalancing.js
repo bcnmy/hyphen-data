@@ -19,7 +19,7 @@ const useStyles = makeStyles({
 
 function App() {
     const classes = useStyles();
-    const [approveNdepositData, setApproveNdepositData] = useState([]);
+    const [burnNexitData, setBurnNexit] = useState([]);
 
     useEffect(() => {
 
@@ -28,18 +28,18 @@ function App() {
             headers: { 'Content-Type': 'application/json' }
         };
 
-        let fromChainId=5;
+        let fromChainId=80001;
         let startTime=0;
         let endTime=1627225457000;
 
-        fetch(`https://hyphen-test-api.biconomy.io/api/v1/data/rebalance?fromChainId=${fromChainId}&startTime=${startTime}&endTime=${endTime}`, requestOptions)
+        fetch(`http://localhost:3000/api/v1/data/rebalance?fromChainId=${fromChainId}&startTime=${startTime}&endTime=${endTime}`, requestOptions)
         .then(res => res.json())
         .then(
             (result) => {
-                setApproveNdepositData(result.withdrawList);
+                setBurnNexit(result.withdrawList);
             },
             (error) => {
-                setApproveNdepositData(error);
+                setBurnNexit(error);
             }
         )
         
@@ -47,7 +47,7 @@ function App() {
 
     return (
         <div className="App">
-            <div> Eth to Matic Rebalancing </div>
+            <div> Matic to Eth Rebalancing </div>
             <TableContainer component={Paper}>
                 <Table className={classes.table} aria-label="simple table">
                     <TableHead>
@@ -60,15 +60,16 @@ function App() {
                             <TableCell align="center">Withdraw Hash</TableCell>
                             <TableCell align="center">Withdraw Fee</TableCell>
                             <TableCell align="center">Withdraw Amount</TableCell>
-                            <TableCell align="center">Approve Hash</TableCell>
-                            <TableCell align="center">Approve Fee</TableCell>
-                            <TableCell align="center">Approve Amount</TableCell>
-                            <TableCell align="center">Deposit Hash</TableCell>
-                            <TableCell align="center">Deposit Fee</TableCell>
+                            <TableCell align="center">Burn Hash</TableCell>
+                            <TableCell align="center">Burn Fee</TableCell>
+                            <TableCell align="center">Burn Amount</TableCell>
+                            <TableCell align="center">Exit Hash</TableCell>
+                            <TableCell align="center">Exit Fee</TableCell>
+                            <TableCell align="center"></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {approveNdepositData.map((row) => (
+                        {burnNexitData.map((row) => (
                             <TableRow key={row.name}>
                                 <TableCell align="left">{row.rebalancingId}</TableCell>
                                 <TableCell align="left">{row.fromChainId}</TableCell>
@@ -78,16 +79,11 @@ function App() {
                                 <TableCell align="left">{row.withdrawData.transactionHash}</TableCell>
                                 <TableCell align="left">{row.withdrawData.txnFeesInFiat}</TableCell>
                                 <TableCell align="left">{row.withdrawData.amount}</TableCell>
-                                <TableCell align="left">{row.approveData.approveHash}</TableCell>
-                                {row.approveData.approveTxnFeesInFiat &&
-                                    <TableCell align="left">{row.approveData.approveTxnFeesInFiat}</TableCell>
-                                }
-                                {!row.approveData.approveTxnFeesInFiat &&
-                                    <TableCell align="left">NA</TableCell>
-                                }
-                                <TableCell align="left">{row.approveData.amount}</TableCell>
-                                <TableCell align="left">{row.depositData.depositHash}</TableCell>
-                                <TableCell align="left">{row.depositData.depositTxnFeesInFiat}</TableCell>
+                                <TableCell align="left">{row.burnData.burnHash}</TableCell>
+                                <TableCell align="left">{row.burnData.burnTxnFeesInFiat}</TableCell>
+                                <TableCell align="left">{row.burnData.amount}</TableCell>
+                                <TableCell align="left">{row.burnData.amount}</TableCell>
+                                <TableCell align="left">{row.exitData.exitTxnFeesInFiat}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
