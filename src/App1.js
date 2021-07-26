@@ -74,12 +74,6 @@ function App() {
         return d.toLocaleDateString() + " " + d.toLocaleTimeString();
     }
 
-    let decodeInput = (input) => { 
-        let decodedData = abiDecoder.decodeMethod(input);
-        console.log(decodedData.params);
-        return decodedData.params;
-    }
-
     return (
         <div className="App">
             <TableContainer component={Paper}>
