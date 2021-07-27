@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from  'clsx';
 import { getTotalDepositPerNetwork } from '../../service/deposit';
 import { config } from '../../config';
-import CounterPerNetwork from '../basic/CounterPerNetwork';
+import CounterAllNetworks from '../basic/CounterAllNetworks';
 let numeral = require('numeral'); //http://numeraljs.com/
 
 const useStyles = makeStyles({
@@ -37,33 +37,32 @@ const useStyles = makeStyles({
   }
 });
 
-export default function TotalDepositPerNetwork(props) {
+export default function CumulativeDeposit(props) {
     const classes = useStyles();
 
     const [totalDeposit, setTotalDeposit] = useState("");
-    const [networkName, setNetworkName] = useState("");
     const [label, setLabel] = useState();
 
     useEffect(()=>{
-        let chainId = props.chainId;
+        let chainIds = props.chainIds;
 
-        if(chainId) {
-            fetchTotalDeposit(chainId);
-            
-            let networkInfo = config.chainIdMap[chainId];
-            if(networkInfo) {
-                setNetworkName(networkInfo.name);
-            }
+        if(chainIds) {
+            fetchTotalDeposit(chainIds);
         }
     }, []);
 
-    let fetchTotalDeposit = async (chainId) => {
+    let fetchTotalDeposit = async (chainIds) => {
         try {
-            let _totalDeposit = await getTotalDepositPerNetwork(chainId);
+            let _totalDeposit = 0;
+            for(let index = 0; index < chainIds.length; index++) {
+                let item = chainIds[index];
+                _totalDeposit += await getTotalDepositPerNetwork(item);
+            }
+            
             if(_totalDeposit != undefined) {
                 // Format Data here
                 setTotalDeposit(_totalDeposit);
-                _totalDeposit = numeral(_totalDeposit).format('$ 0.00a');
+                _totalDeposit = numeral(_totalDeposit).format(config.counterFormat);
                 setLabel(_totalDeposit);
             }
         } catch(error) {
@@ -73,10 +72,11 @@ export default function TotalDepositPerNetwork(props) {
     }
 
     return (
-        <CounterPerNetwork 
+        <CounterAllNetworks
             title={props.title}
             counter={totalDeposit}
             label={label}
-            chainId={props.chainId} />
+            chainIds={props.chainIds}
+            {...props} />
     )
 }

@@ -1,9 +1,10 @@
+import PolygonLogo from "./assets/polygon-matic-logo.png";
+import EthereumLogo from "./assets/Ethereum.png";
+import USDCLogo from "./assets/usdc.png";
+import USDTLogo from "./assets/usdt.png";
+import DAILogo from "./assets/dai.png";
+
 const abiDecoder = require('abi-decoder');
-let USDCLogo = require("./assets/usdc.png");
-let USDTLogo = require("./assets/usdt.png");
-let DAILogo = require("./assets/dai.png");
-let PolygonLogo = require("./assets/polygon-matic-logo.png");
-let EthereumLogo = require("./assets/Ethereum.png");
 
 const TEST_ENVIRONMENT = "test";
 const PROD_ENVIRONMENT = "prod";
@@ -13,6 +14,7 @@ let getEnv = () => {
 }
 
 var config = {};
+config.counterFormat = '$ 0,0';
 config.getEnv = getEnv;
 config.tokenLogoMap = {
     "USDC": USDCLogo,
@@ -26,6 +28,8 @@ config.chainLogoMap = {
     137: PolygonLogo,
     1: EthereumLogo
 }
+let ethereumColor = "#868EAC";
+let polygonColor = "#8247E5";
 
 let MUMBAI = { 
     name: "Mumbai",
@@ -35,7 +39,8 @@ let MUMBAI = {
     currency: "Test MATIC",
     nativeFaucetURL: "https://faucet.matic.network/",
     assetSentTopicId: "0xec1dcc5633614eade4a5730f51adc7444a5103a8477965a32f2e886f5b20f694",
-    graphURL : "https://api.thegraph.com/subgraphs/name/divyan73/lpmanagermumbai"
+    graphURL : "https://api.thegraph.com/subgraphs/name/divyan73/lpmanagermumbai",
+    color: polygonColor
 }
 let ETHEREUM = { 
     name: "Ethereum",
@@ -45,7 +50,8 @@ let ETHEREUM = {
     currency: "ETH",
     nativeFaucetURL: "",
     assetSentTopicId: "0xec1dcc5633614eade4a5730f51adc7444a5103a8477965a32f2e886f5b20f694",
-    graphURL : ""
+    graphURL : "",
+    color: ethereumColor
 }
 let MATIC = { 
     name: "Polygon",
@@ -55,7 +61,8 @@ let MATIC = {
     currency: "MATIC",
     nativeFaucetURL: "",
     assetSentTopicId: "0xec1dcc5633614eade4a5730f51adc7444a5103a8477965a32f2e886f5b20f694",
-    graphURL : ""
+    graphURL : "",
+    color: polygonColor
 }
 let GOERLI = { 
     name: "Goerli",
@@ -65,7 +72,8 @@ let GOERLI = {
     currency: "Goerli ETH",
     nativeFaucetURL: "https://faucet.goerli.mudit.blog/",
     assetSentTopicId: "0xec1dcc5633614eade4a5730f51adc7444a5103a8477965a32f2e886f5b20f694",
-    graphURL : "https://api.thegraph.com/subgraphs/name/divyan73/lpmanagergoerli"
+    graphURL : "https://api.thegraph.com/subgraphs/name/divyan73/lpmanagergoerli",
+    color: ethereumColor
 }
 
 let chains;
@@ -278,4 +286,4 @@ config.mumbaiRpc = `https://rpc-mumbai.matic.today`;
 config.ethereumRpc = ``;
 config.maticRpc = ``;
 
-module.exports = { config };
+export { config };
