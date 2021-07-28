@@ -4,7 +4,7 @@ import clsx from  'clsx';
 const useStyles = makeStyles({
   root: {
       padding: "5px",
-      width: "450px",
+      width: "470px",
       fontFamily: 'Roboto Mono!important'
   },
   container: {
@@ -19,6 +19,7 @@ const useStyles = makeStyles({
       padding: "5px 10px",
   },
   headerRow: {
+    marginTop: "5px",
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",

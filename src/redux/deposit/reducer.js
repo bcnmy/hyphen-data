@@ -3,10 +3,7 @@ import {
 } from './types';
 
 const initialState = {
-  totalVolume : undefined,
-  totalVolumePerChain : {},
-  volumePerDay : {},
-  volumePerDayPerChain : {}
+  
 }
 
 const reducer = (state = initialState, action) => {

@@ -21,7 +21,7 @@ const useStyles = makeStyles({
   root: {
       padding: "5px",
       margin: "0 5px",
-      width: "662px",
+      width: "680px",
       height: "310px!important",
       border: "2px solid #615CCD",
       borderRadius: "5px"
@@ -72,7 +72,15 @@ export default function DailyDepositGraph(props) {
             }
             console.log(dailyDepositMap);
             let dailyDepositArray = [];
-            let dateArray = Object.keys(dailyDepositMap[chainIds[0]]);
+
+            let dateArray= [];
+            for(let index = 0; index < chainIds.length; index++) {
+                let item = chainIds[index];
+                if(dateArray.length < Object.keys(dailyDepositMap[item]).length) {
+                    dateArray = Object.keys(dailyDepositMap[item]);
+                }
+            }
+
             for(let index = 0; index < dateArray.length; index++) {
                 let key = dateArray[index];
                 let date = new Date(key * 1000);

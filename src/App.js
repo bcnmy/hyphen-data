@@ -10,14 +10,15 @@ import clsx from "clsx";
 import DailyDepositGraph from "./components/deposit/DailyDepositGraph";
 import FeeEarnedGraph from "./components/fee/FeeEarnedGraph";
 import HyphenIcon from "./assets/Hyphen_icon.png";
+import Header from "./components/Header";
 
 let { config } = require("./config");
 
 const useStyles = makeStyles({
   root: {
-      padding: "0px",
-      margin: "0px",
-      fontFamily: 'Roboto Mono!important'
+      padding: "71px 0px 0px 0px",
+      margin: "0px",      
+      fontFamily: 'Roboto Mono!important',
   },
   totalDepositContainer: {
     padding: "10px",
@@ -27,23 +28,13 @@ const useStyles = makeStyles({
   },
   depositComponentRow: {
       display: "flex",
-      flexDirection: "row"
+      flexDirection: "row",
+      justifyContent: "space-between"
   },
   graphComponentRow: {
     display: "flex",
-    flexDirection: "row"
-  },
-  depositHeading: {
-      padding: "10px",
-      fontWeight: "bold",
-      fontSize: "25px",
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center"
-  },
-  hyphenLogo: {
-      width: "24px",
-      marginRight: "5px"
+    flexDirection: "row",
+    justifyContent: "space-between"
   }
 });
 
@@ -56,12 +47,8 @@ function App() {
     };
 
     return (
-        <div className="root">
-            <div className={classes.depositHeading}>
-                <img src={HyphenIcon} alt="Hyphen" className={classes.hyphenLogo}/>
-                Hyphen
-            </div>
-
+        <div className={classes.root}>
+            <Header title="Hyphen" logo={HyphenIcon}/>
             <div className={classes.totalDepositContainer}>
                 <div className={classes.depositComponentRow}>
                     <TotalDepositWithDuration 

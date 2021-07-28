@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from  'clsx';
-import { getGraphClient } from '../../service/subgraph';
 
 const useStyles = makeStyles({
   root: {

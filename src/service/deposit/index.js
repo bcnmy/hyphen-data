@@ -131,8 +131,9 @@ function getDailyDepositsUSD(chainId, startTime, endTime) {
                   epochTime
                 }
             }`
-            let data = await executeQuery(chainId, query);
 
+            let data = await executeQuery(chainId, query);
+            
             let volumeMap = {};
             if(data && data.data && data.data.volumePerDays) {
                 let aggregateData = data.data.volumePerDays;
