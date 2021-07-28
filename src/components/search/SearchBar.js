@@ -1,18 +1,14 @@
 import { useEffect, useState } from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import clsx from  'clsx';
-import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
-import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
-import DirectionsIcon from '@material-ui/icons/Directions';
-import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import { config } from '../../config';
+import { useSelector, useDispatch } from 'react-redux'
+import { updateSearchState } from '../../redux';
 
 const BootstrapInput = withStyles((theme) => ({
   root: {
@@ -56,7 +52,7 @@ const useStyles = makeStyles({
     flexDirection: "row",
     border: "1px solid #D5DAE2",
     borderRadius: "5px",
-    width: "500px",
+    width: "600px",
     height: "40px"
   },
   input: {
@@ -71,12 +67,21 @@ const useStyles = makeStyles({
 });
 
 export default function SearchBar(props) {
+    const dispatch = useDispatch();
     const classes = useStyles();
 
     const [selectedNetwork, setSelectedNetwork] = useState(80001);
 
-
     const handleNetworkChange = (event) => {
+        setSelectedNetwork(event.target.value);
+        dispatch(updateSearchState({networkId: event.target.value}));
+    }
+
+    const onSearchTextChanged = (event) => {
+        dispatch(updateSearchState({searchText: event.target.value}));
+    }
+
+    const onSearchClicked = (event) => {
 
     }
 
@@ -90,9 +95,9 @@ export default function SearchBar(props) {
                 input={<BootstrapInput />}
                 onChange={handleNetworkChange}>
 
-                <MenuItem value={80001}>Mumbai</MenuItem>
-                <MenuItem value={5}>Goerli</MenuItem>
-
+                {config.supportedChainArrray.map((item, index) =>
+                    <MenuItem key={`ChainMenuItem_${index}`} value={item.chainId}>{item.name}</MenuItem>
+                )}
             </Select>
 
 
@@ -100,8 +105,10 @@ export default function SearchBar(props) {
                 className={classes.input}
                 placeholder="Search by Address / Deposit Hash"
                 inputProps={{ 'aria-label': 'Search by Address / Deposit Hash' }}
+                onChange={onSearchTextChanged}
             />
-            <IconButton type="submit" className={classes.iconButton} aria-label="search">
+            <IconButton type="submit" className={classes.iconButton} aria-label="search"
+                onClick={onSearchClicked}>
                 <SearchIcon />
             </IconButton>
         </div>

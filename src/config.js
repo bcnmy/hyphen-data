@@ -228,6 +228,10 @@ config.LP_MANAGER_ABI =  [ { "inputs": [ { "internalType": "address", "name": "_
 
 abiDecoder.addABI(config.LP_MANAGER_ABI);
 
+config.PAGE = {
+    HOME: "home",
+    SEARCH: "search"
+}
 
 // OLD CONFIG
 config.contractAddress = {
