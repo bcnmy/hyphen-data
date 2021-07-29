@@ -14,7 +14,7 @@ let getEnv = () => {
 }
 
 var config = {};
-config.counterFormat = '$ 0,0';
+config.counterFormat = '$ 0.00a';
 config.getEnv = getEnv;
 config.tokenLogoMap = {
     "USDC": USDCLogo,
@@ -230,7 +230,7 @@ abiDecoder.addABI(config.LP_MANAGER_ABI);
 
 config.PAGE = {
     HOME: "home",
-    SEARCH: "search"
+    TRANSFER_DETAILS: "transfer_details"
 }
 
 // OLD CONFIG

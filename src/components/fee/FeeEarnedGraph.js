@@ -131,7 +131,7 @@ export default function FeeEarnedGraph(props) {
                         verticalAlignment="bottom"
                         />
 
-                    <Title text={`Daily Fee (USD)`} textComponent={TextComponent}/>
+                    <Title text={`Daily LP Fee (USD)`} textComponent={TextComponent}/>
                     <EventTracker />
                     <HoverState />
                     <Tooltip />

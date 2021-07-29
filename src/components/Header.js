@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import clsx from  'clsx';
 import SearchBar from './search/SearchBar';
+import { useDispatch } from 'react-redux'
+import { config } from '../config';
+import { updateRootState } from '../redux';
 
 const useStyles = makeStyles({
   root: {
@@ -19,6 +20,7 @@ const useStyles = makeStyles({
       height: "71px"
   },
   heading: {
+    cursor: "pointer",
     padding: "2px",
     fontWeight: "bold",
     fontSize: "25px",
@@ -35,10 +37,14 @@ const useStyles = makeStyles({
 
 export default function Header(props) {
     const classes = useStyles();
+    const dispatch = useDispatch();
 
+    const showHomePage = () => {
+        dispatch(updateRootState({currentPage: config.PAGE.HOME}));
+    }
     return (
         <div className={classes.root}>
-            <div className={classes.heading}>
+            <div className={classes.heading} onClick={showHomePage}>
                 <img src={props.logo} alt={props.title} className={classes.logo}/>
                 {props.title}
             </div>

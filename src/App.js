@@ -4,9 +4,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import HyphenIcon from "./assets/Hyphen_icon.png";
 import Header from "./components/Header";
 import Home from "./components/page/Home";
-import App2 from "./App2";
+import TransferDetails from "./components/page/TransferDetails";
 import { useSelector, useDispatch } from 'react-redux'
-import { updateSearchState, updateRootState } from './redux';
+import { updateSearchState } from './redux';
 let { config } = require("./config");
 
 const useStyles = makeStyles({
@@ -19,10 +19,17 @@ const useStyles = makeStyles({
 
 function App() {
     const classes = useStyles();
+    const dispatch = useDispatch();
 
     const currentPage = useSelector(state => state.root.currentPage);
 
     const [currentComponent, setCurrentComponent] = useState();
+
+    useEffect(()=>{
+        if(config.supportedChainArrray && config.supportedChainArrray.length > 0) {
+            dispatch(updateSearchState({networkId : config.supportedChainArrray[0].chainId}));
+        }
+    }, []);
 
     useEffect(()=>{
         if(currentPage) {
@@ -30,8 +37,8 @@ function App() {
                 case config.PAGE.HOME:
                     setCurrentComponent(<Home />);
                     break;
-                case config.PAGE.SEARCH:
-                    setCurrentComponent(<App2 />);
+                case config.PAGE.TRANSFER_DETAILS:
+                    setCurrentComponent(<TransferDetails />);
                     break;
             }
         }

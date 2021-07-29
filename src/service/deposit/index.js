@@ -159,9 +159,67 @@ function getDailyDepositsUSD(chainId, startTime, endTime) {
     });
 }
 
+let getDepositData = (chainId, depositHash) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let depositData;
+            let query = `query {
+                fundsDepositeds(where: {id: "${depositHash}"}) {
+                    id
+                    from
+                    toChainId
+                    timestamp
+                    tokenAddress
+                    receiver
+                    amount
+                }
+            }`
+            let data = await executeQuery(chainId, query);
+            if(data && data.data && data.data.fundsDepositeds && data.data.fundsDepositeds.length > 0) {
+                depositData = {...data.data.fundsDepositeds[0]};
+                if(depositData.amount != undefined) {
+                    depositData.formattedAmount = getFormattedValue({rawValue: depositData.amount, chainId, tokenAddress: depositData.tokenAddress});
+                    depositData.formattedAmountUSD = getDollarValue(depositData.formattedAmount);
+                }
+            }
+            resolve(depositData);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
+let getDepositTransactions = (fromChainId, toChainId, numOfTransactions=30) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if(!fromChainId || !toChainId) {
+                return reject("Invalid fromChainId or toChainId passed as parameter. Please check the inputs");
+            }
+
+            let query = `{
+                fundsDepositeds(first: ${numOfTransactions}, where:{toChainId: ${toChainId}}) {
+                  id
+                  timestamp
+                  tokenAddress
+                }
+            }`
+            let data = await executeQuery(fromChainId, query);
+
+            let depositTransactions = [];
+            if(data && data.data && data.data.fundsDepositeds) {
+                depositTransactions = data.data.fundsDepositeds;
+            }
+            resolve(depositTransactions);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
 export {
     getTotalDeposit,
     getTotalDepositPerNetwork,
     getDailyDepositsUSD,
-    getTotalDepositWithDuration
+    getTotalDepositWithDuration,
+    getDepositData,
+    getDepositTransactions
 }

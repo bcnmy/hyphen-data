@@ -8,6 +8,8 @@ import TotalDepositPerNetwork from '../deposit/TotalDepositPerNetwork';
 import TotalDepositWithDuration from '../deposit/TotalDepositWithDuration';
 import DailyDepositGraph from "../deposit/DailyDepositGraph";
 import FeeEarnedGraph from "../fee/FeeEarnedGraph";
+import AverageTransferTime from "../transfer/AverageTransferTime";
+
 let { config } = require("../../config");
 
 const useStyles = makeStyles({
@@ -41,20 +43,27 @@ export default function Home(props) {
         border: "2px solid #111"
     };
 
+    let supportedChainIds = [];
+    if(config.supportedChainArrray && config.supportedChainArrray.length > 0) {
+        config.supportedChainArrray.forEach((chain)=>
+            supportedChainIds.push(chain.chainId)
+        );
+    }
+
     return (
         <div className={classes.root}>
             <div className={classes.totalDepositContainer}>
                 <div className={classes.depositComponentRow}>
                     <TotalDepositWithDuration 
-                        chainIds={[5, 80001]} days={1} title="24 hr Volume" 
+                        chainIds={supportedChainIds} days={1} title="24 hr Volume" 
                         showComparision={true}
                         lightBackground={true}
                         style={durationStyle}/>
-                    <CumulativeDeposit title="Cumulative Volume" chainIds={[5, 80001]}
+                    <CumulativeDeposit title="Total Volume" chainIds={supportedChainIds}
                         style={durationStyle}/>
-                    <UniqueWalletCount title="Unique User Count" chainIds={[5, 80001]}
+                    <UniqueWalletCount title="Unique User Count" chainIds={supportedChainIds}
                         style={durationStyle}/>
-
+                    <AverageTransferTime style={durationStyle} fromChainId={supportedChainIds[0]} toChainId={supportedChainIds[1]}/>
                     {/* <TotalDepositPerNetwork chainId={5} title="Cumulative Volume"/>
                     <TotalDepositPerNetwork chainId={80001} title="Cumulative Volume"/> */}
 
@@ -68,7 +77,7 @@ export default function Home(props) {
                     config.supportedChainArrray.map((item, index)=>(
                         <div className={classes.depositComponentRow} key={`NetworkRow_${index}`}>
                             <TotalDepositWithDuration chainIds={[item.chainId]} days={1} title="24 hr Volume" showComparision={true}/>
-                            <CumulativeDeposit title="Cumulative Volume" chainIds={[item.chainId]} />
+                            <CumulativeDeposit title="Total Volume" chainIds={[item.chainId]} />
                             <UniqueWalletCount title="Unique User Count" chainIds={[item.chainId]} />
                         </div>
                     ))
@@ -76,8 +85,8 @@ export default function Home(props) {
             </div>
             <div className={classes.graphContainer}>
                 <div className={classes.graphComponentRow}>
-                    <DailyDepositGraph chainIds={[80001, 5]}/>
-                    <FeeEarnedGraph chainIds={[80001, 5]}/>
+                    <DailyDepositGraph chainIds={supportedChainIds}/>
+                    <FeeEarnedGraph chainIds={supportedChainIds}/>
                 </div>
             </div>
         </div>

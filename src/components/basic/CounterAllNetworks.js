@@ -11,7 +11,7 @@ const useStyles = makeStyles({
   chainInfoContainer: {
     display: "flex",
     flexDirection: "row"
-}
+ }
 });
 
 export default function CounterAllNetworks(props) {
@@ -21,7 +21,7 @@ export default function CounterAllNetworks(props) {
 
     useEffect(()=>{
         let chainIds = props.chainIds;
-        if(chainIds != undefined && chainIds.length > 0) {
+        if(chainIds !== undefined && chainIds.length > 0) {
             let _chainInfo;
             if(chainIds.length == 1) {
                 let chainId = chainIds[0];

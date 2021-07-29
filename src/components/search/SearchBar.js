@@ -7,8 +7,8 @@ import SearchIcon from '@material-ui/icons/Search';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import { config } from '../../config';
+import { updateSearchState, updateRootState } from '../../redux';
 import { useSelector, useDispatch } from 'react-redux'
-import { updateSearchState } from '../../redux';
 
 const BootstrapInput = withStyles((theme) => ({
   root: {
@@ -24,16 +24,16 @@ const BootstrapInput = withStyles((theme) => ({
     // Use the system font instead of the default Roboto font.
     fontFamily: [
         'Roboto-Mono',
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
+        '-apple-system',
+        'BlinkMacSystemFont',
+        '"Segoe UI"',
+        'Roboto',
+        '"Helvetica Neue"',
+        'Arial',
+        'sans-serif',
+        '"Apple Color Emoji"',
+        '"Segoe UI Emoji"',
+        '"Segoe UI Symbol"',  
     ].join(','),
     '&:focus': {
       borderRadius: 4,
@@ -71,6 +71,7 @@ export default function SearchBar(props) {
     const classes = useStyles();
 
     const [selectedNetwork, setSelectedNetwork] = useState(80001);
+    const [_searchText, setSearchText] = useState("");
 
     const handleNetworkChange = (event) => {
         setSelectedNetwork(event.target.value);
@@ -78,11 +79,15 @@ export default function SearchBar(props) {
     }
 
     const onSearchTextChanged = (event) => {
-        dispatch(updateSearchState({searchText: event.target.value}));
+        setSearchText(event.target.value);
     }
 
     const onSearchClicked = (event) => {
-
+      if(_searchText && _searchText.length > 0) {
+        dispatch(updateSearchState({searchText: _searchText}));
+        setSearchText("");
+        dispatch(updateRootState({currentPage: config.PAGE.TRANSFER_DETAILS}));
+      }
     }
 
     return (
@@ -103,9 +108,10 @@ export default function SearchBar(props) {
 
             <InputBase
                 className={classes.input}
-                placeholder="Search by Address / Deposit Hash"
-                inputProps={{ 'aria-label': 'Search by Address / Deposit Hash' }}
+                placeholder="Search by Deposit Hash"
+                inputProps={{ 'aria-label': 'Search by Deposit Hash' }}
                 onChange={onSearchTextChanged}
+                value={_searchText}
             />
             <IconButton type="submit" className={classes.iconButton} aria-label="search"
                 onClick={onSearchClicked}>

@@ -25,10 +25,13 @@ const useStyles = makeStyles({
     justifyContent: "space-between",
     fontWeight: "bold"
   },
+  headerTitle: {
+    fontSize: "16px"
+  },
   valueRow: {
     textAlign: "center",      
     fontSize: "40px",
-    padding: "40px 20px",
+    padding: "30px 20px",
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
@@ -61,7 +64,7 @@ export default function Counter(props) {
     const classes = useStyles();
     
     let percChangeComponent;
-    if(props.previousCounter != undefined && props.counter != undefined) {
+    if(props.previousCounter !== undefined && props.counter !== undefined) {
         let percentageChange = ((props.counter - props.previousCounter)/props.counter)*100;
         if(percentageChange) percentageChange = percentageChange.toFixed(0);
         if(percentageChange >= 0) {
@@ -86,7 +89,7 @@ export default function Counter(props) {
                         {props.chainInfo}
                     </div>
                 </div>
-                <div className={clsx(classes.row, classes.valueRow)}>
+                <div className={clsx(classes.row, classes.valueRow)} style={props.labelContainerStyle}>
                     {props.label || "..."} {props.previousCounter && 
                         percChangeComponent
                     }
