@@ -32,7 +32,6 @@ let executeQuery = (chainId, query) => {
                 let data = await graphClient.query({
                     query: gql(query)
                 });
-                console.log("Data returned from SubGraph: ", data);
                 resolve(data);
             }
         } catch(error) {

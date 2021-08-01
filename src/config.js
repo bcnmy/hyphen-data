@@ -14,7 +14,7 @@ let getEnv = () => {
 }
 
 var config = {};
-config.counterFormat = '$ 0.00a';
+config.counterFormat = '$ 0,0';
 config.getEnv = getEnv;
 config.tokenLogoMap = {
     "USDC": USDCLogo,
@@ -40,7 +40,8 @@ let MUMBAI = {
     nativeFaucetURL: "https://faucet.matic.network/",
     assetSentTopicId: "0xec1dcc5633614eade4a5730f51adc7444a5103a8477965a32f2e886f5b20f694",
     graphURL : "https://api.thegraph.com/subgraphs/name/divyan73/lpmanagermumbai",
-    color: polygonColor
+    color: polygonColor,
+    LPManagerAddress: "0x65d8bf5a792ad32ee884f77301e8d6b11fbb21b3"
 }
 let ETHEREUM = { 
     name: "Ethereum",
@@ -50,8 +51,9 @@ let ETHEREUM = {
     currency: "ETH",
     nativeFaucetURL: "",
     assetSentTopicId: "0xec1dcc5633614eade4a5730f51adc7444a5103a8477965a32f2e886f5b20f694",
-    graphURL : "",
-    color: ethereumColor
+    graphURL : "https://api.thegraph.com/subgraphs/name/divyan73/hyphen-ethereum",
+    color: ethereumColor,
+    LPManagerAddress: "0x246f48bf00427d9abb3d44caa709b1a90377ed90"
 }
 let MATIC = { 
     name: "Polygon",
@@ -61,8 +63,9 @@ let MATIC = {
     currency: "MATIC",
     nativeFaucetURL: "",
     assetSentTopicId: "0xec1dcc5633614eade4a5730f51adc7444a5103a8477965a32f2e886f5b20f694",
-    graphURL : "",
-    color: polygonColor
+    graphURL : "https://api.thegraph.com/subgraphs/name/divyan73/hyphenpolygon",
+    color: polygonColor,
+    LPManagerAddress: "0x246f48bf00427d9abb3d44caa709b1a90377ed90"
 }
 let GOERLI = { 
     name: "Goerli",
@@ -73,7 +76,8 @@ let GOERLI = {
     nativeFaucetURL: "https://faucet.goerli.mudit.blog/",
     assetSentTopicId: "0xec1dcc5633614eade4a5730f51adc7444a5103a8477965a32f2e886f5b20f694",
     graphURL : "https://api.thegraph.com/subgraphs/name/divyan73/lpmanagergoerli",
-    color: ethereumColor
+    color: ethereumColor,
+    LPManagerAddress: "0x67e040c687e8a5b6e6b57988284ebc77c905a61c"
 }
 
 let chains;
@@ -92,7 +96,7 @@ config.chainIdMap = {};
 let supportedChainArrray = Object.values(chains);
 config.supportedChainArrray = supportedChainArrray;
 
-config.supportedTokenSymbols = ["USDC","USDT","DAI"];
+config.supportedTokenSymbols = ["USDC"];
 
 for(let index = 0; index < supportedChainArrray.length; index++) {
     let currentChain = supportedChainArrray[index];
@@ -217,8 +221,10 @@ if(getEnv() === PROD_ENVIRONMENT) {
 } else {
     hyphenBaseUrl = "http://localhost:3000";
 }
+
 config.hyphen = {
-    baseURL : hyphenBaseUrl
+    baseURL : hyphenBaseUrl,
+    getPoolInfoPath : "/api/v1/insta-exit/get-pool-info"
 }
 
 config.ERC20_ABI = [ { "inputs": [ { "internalType": "string", "name": "name_", "type": "string" }, { "internalType": "string", "name": "symbol_", "type": "string" } ], "stateMutability": "nonpayable", "type": "constructor" }, { "inputs": [ { "internalType": "address", "name": "spender", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" } ], "name": "approve", "outputs": [ { "internalType": "bool", "name": "", "type": "bool" } ], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "account", "type": "address" } ], "name": "balanceOf", "outputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "name", "outputs": [ { "internalType": "string", "name": "", "type": "string" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "symbol", "outputs": [ { "internalType": "string", "name": "", "type": "string" } ], "stateMutability": "view", "type": "function" }, {"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"}, { "inputs": [{ "internalType": "address", "name": "owner", "type": "address" }, { "internalType": "address", "name": "spender", "type": "address" }], "name": "allowance", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" } ];

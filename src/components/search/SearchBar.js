@@ -70,7 +70,7 @@ export default function SearchBar(props) {
     const dispatch = useDispatch();
     const classes = useStyles();
 
-    const [selectedNetwork, setSelectedNetwork] = useState(80001);
+    const [selectedNetwork, setSelectedNetwork] = useState(config.supportedChainArrray[0].chainId);
     const [_searchText, setSearchText] = useState("");
 
     const handleNetworkChange = (event) => {

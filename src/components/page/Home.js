@@ -9,6 +9,7 @@ import TotalDepositWithDuration from '../deposit/TotalDepositWithDuration';
 import DailyDepositGraph from "../deposit/DailyDepositGraph";
 import FeeEarnedGraph from "../fee/FeeEarnedGraph";
 import AverageTransferTime from "../transfer/AverageTransferTime";
+import AvailableLiquidity from '../liquidity/AvailableLiquidity';
 
 let { config } = require("../../config");
 
@@ -87,6 +88,13 @@ export default function Home(props) {
                 <div className={classes.graphComponentRow}>
                     <DailyDepositGraph chainIds={supportedChainIds}/>
                     <FeeEarnedGraph chainIds={supportedChainIds}/>
+                </div>
+                <div className={classes.graphComponentRow}>
+                    {config.supportedChainArrray && config.supportedChainArrray.length > 0 &&
+                        config.supportedChainArrray.map((item, index)=>(
+                            <AvailableLiquidity chainId={item.chainId} key={`AL_${index}`}/>
+                        ))
+                    }
                 </div>
             </div>
         </div>

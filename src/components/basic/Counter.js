@@ -64,7 +64,7 @@ export default function Counter(props) {
     const classes = useStyles();
     
     let percChangeComponent;
-    if(props.previousCounter !== undefined && props.counter !== undefined) {
+    if(props.previousCounter !== undefined && props.counter !== undefined && props.counter !== 0) {
         let percentageChange = ((props.counter - props.previousCounter)/props.counter)*100;
         if(percentageChange) percentageChange = percentageChange.toFixed(0);
         if(percentageChange >= 0) {
@@ -90,7 +90,7 @@ export default function Counter(props) {
                     </div>
                 </div>
                 <div className={clsx(classes.row, classes.valueRow)} style={props.labelContainerStyle}>
-                    {props.label || "..."} {props.previousCounter && 
+                    {props.label || "..."} {props.previousCounter != undefined && 
                         percChangeComponent
                     }
                 </div>
