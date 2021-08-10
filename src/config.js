@@ -59,7 +59,7 @@ let MATIC = {
     name: "Polygon",
     subText: "Polygon Mainnet",
     chainId: 137,
-    rpcUrl: "https://rpc-mainnet.matic.network",
+    rpcUrl: "https://polygon-mainnet.infura.io/v3/9f3d50cfb1824510a04939b1b3d4257a",
     currency: "MATIC",
     nativeFaucetURL: "",
     assetSentTopicId: "0xec1dcc5633614eade4a5730f51adc7444a5103a8477965a32f2e886f5b20f694",
@@ -96,7 +96,7 @@ config.chainIdMap = {};
 let supportedChainArrray = Object.values(chains);
 config.supportedChainArrray = supportedChainArrray;
 
-config.supportedTokenSymbols = ["USDC"];
+config.supportedTokenSymbols = ["USDC","USDT"];
 
 for(let index = 0; index < supportedChainArrray.length; index++) {
     let currentChain = supportedChainArrray[index];

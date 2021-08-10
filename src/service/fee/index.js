@@ -21,24 +21,25 @@ function getDailyFee(chainId, startTime, endTime) {
             }`
             let data = await executeQuery(chainId, query);
 
-            let feeMap = {};
+            let feeMap = new Map();
             if(data && data.data && data.data.feePerDays) {
                 let aggregateData = data.data.feePerDays;
                 if(aggregateData.length > 0) {
                     for(let index = 0; index < aggregateData.length; index++) {
                         let entry = aggregateData[index];
-                        let currentFee = feeMap[entry.epochTime];
+                        let currentFee = feeMap.get(entry.epochTime);
                         if(!currentFee) {
                             currentFee = 0;
                         }
                         let formattedValue = getFormattedValue({rawValue: entry.totalFee, chainId, tokenAddress: entry.tokenAddress});
                         currentFee += parseFloat(getDollarValue(formattedValue));
-                        feeMap[entry.epochTime] = currentFee;
+                        feeMap.set(entry.epochTime, currentFee);
                     }
                 } else {
                     console.log(`No Deposit data found on chainId ${chainId}`)
                 }
             }
+            
             resolve(feeMap);
         } catch(error) {
             reject(error);

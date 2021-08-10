@@ -71,30 +71,40 @@ export default function FeeEarnedGraph(props) {
                 let item = chainIds[index];
                 dailyDepositMap[item] = await getDailyFee(item, startTime, endTime);
             }
-            console.log(dailyDepositMap);
 
             let dailyDepositArray = [];
-            let dateArray= [];
+            let longestMap = new Map();
             for(let index = 0; index < chainIds.length; index++) {
                 let item = chainIds[index];
-                if(dateArray.length < Object.keys(dailyDepositMap[item]).length) {
-                    dateArray = Object.keys(dailyDepositMap[item]);
+                if(longestMap.size < dailyDepositMap[item].size) {
+                    longestMap = dailyDepositMap[item];
                 }
             }
-            for(let index = 0; index < dateArray.length; index++) {
-                let key = dateArray[index];
-                let date = new Date(key * 1000);
-                
-                let obj = {};
-                obj["date"] = `${date.getDate()}/${date.getMonth()+1}`;
-                for(let index = 0; index < chainIds.length; index++) {
-                    let item = chainIds[index];
-                    obj[`amount${item}`] = dailyDepositMap[item][key];
-                }
 
-                dailyDepositArray.push(obj);
+            let it = longestMap.keys();
+            if(it) {
+                let result = it.next();
+                while (!result.done) {
+                    let key = result.value;
+                    let date = new Date(key * 1000);
+                    let obj = {};
+                    obj["date"] = `${date.getDate()}/${date.getMonth()+1}`;
+                    for(let index = 0; index < chainIds.length; index++) {
+                        let item = chainIds[index];
+                        let value = dailyDepositMap[item].get(key);
+                        
+                        if(value != undefined) {
+                            obj[`amount${item}`] = value;
+                        } else {
+                            obj[`amount${item}`] = 0;
+                        }
+                    }
+                    dailyDepositArray.push(obj);
+
+                    result = it.next();
+                }
             }
-            setDailyFee(dailyDepositArray);
+            setDailyFee(dailyDepositArray.reverse());
         } catch(error) {
             console.error(error);
         }
