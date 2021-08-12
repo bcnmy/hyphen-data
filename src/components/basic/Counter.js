@@ -30,7 +30,7 @@ const useStyles = makeStyles({
   },
   valueRow: {
     textAlign: "center",      
-    fontSize: "40px",
+    fontSize: "34px",
     padding: "30px 20px",
     display: "flex",
     flexDirection: "row",
