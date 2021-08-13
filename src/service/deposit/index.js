@@ -88,7 +88,6 @@ function getTotalDepositWithDuration(chainId, startTime, endTime) {
                     amount
                 }
             }`
-            console.log(query);
             let data = await executeQuery(chainId, query);
             if(data && data.data && data.data.fundsDepositeds) {
                 let depositData = data.data.fundsDepositeds;

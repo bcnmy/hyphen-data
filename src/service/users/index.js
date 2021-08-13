@@ -9,7 +9,7 @@ function getUniqueUserCount(chainId) {
             }
 
             let query = `query {
-                uniqueWallets {
+                uniqueWallets(first: 1000) {
                     id
                 }
             }`

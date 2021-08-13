@@ -50,7 +50,6 @@ let getAssetsSent = () => {
                 query: gql(tokensQuery)
             });
             resolve(data.data);
-            // console.log(data.data);
         } catch(error) {
             reject(error);
         }
@@ -76,7 +75,6 @@ function App() {
 
     let decodeInput = (input) => { 
         let decodedData = abiDecoder.decodeMethod(input);
-        console.log(decodedData.params);
         return decodedData.params;
     }
 
