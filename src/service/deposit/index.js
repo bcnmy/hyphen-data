@@ -82,7 +82,7 @@ function getTotalDepositWithDuration(chainId, startTime, endTime) {
             }
 
             let query = `{
-                fundsDepositeds(where :{timestamp_gte: ${startTime}, timestamp_lte: ${endTime}}) {
+                fundsDepositeds(first: 1000, where :{timestamp_gte: ${startTime}, timestamp_lte: ${endTime}}) {
                     id
                     tokenAddress
                     amount
