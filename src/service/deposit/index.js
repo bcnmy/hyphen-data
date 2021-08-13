@@ -197,7 +197,7 @@ let getDepositTransactions = (fromChainId, toChainId, numOfTransactions=30) => {
             }
 
             let query = `{
-                fundsDepositeds(first: ${numOfTransactions}, where:{toChainId: ${toChainId}}) {
+                fundsDepositeds(first: ${numOfTransactions}, orderBy: timestamp, orderDirection: desc , where:{toChainId: ${toChainId}}) {
                   id
                   timestamp
                   tokenAddress
