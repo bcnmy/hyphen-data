@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from  'clsx';
-import { getUniqueUserCount } from '../../service/users';
+import { getUniqueUserCount, getUniqueUserCountByChain } from '../../service/users';
 import { config } from '../../config';
 import CounterAllNetworks from '../basic/CounterAllNetworks';
 let numeral = require('numeral'); //http://numeraljs.com/
@@ -52,14 +52,14 @@ export default function UniqueWalletCount(props) {
 
     let fetchUniqueWalletCount = async (chainIds) => {
         try {
-            let _totalDeposit = 0;
-            for(let index = 0; index < chainIds.length; index++) {
-                let item = chainIds[index];
-                _totalDeposit += await getUniqueUserCount(item);
+            let uniqueUserCount;
+            if(chainIds && chainIds.length == 1) {
+                uniqueUserCount = await getUniqueUserCountByChain(chainIds[0]);
+            } else {
+                uniqueUserCount = await getUniqueUserCount();
             }
-            
-            if(_totalDeposit != undefined) {
-                setUniqueWalletCount(_totalDeposit);
+            if(uniqueUserCount != undefined) {
+                setUniqueWalletCount(uniqueUserCount);
             }
         } catch(error) {
             console.error(error);

@@ -1,6 +1,7 @@
 import { executeQuery } from '../subgraph';
+import { config } from '../../config';
 
-function getUniqueUserCount(chainId) {
+function getUniqueUserCountByChain(chainId) {
     return new Promise(async (resolve, reject) => {
         try {
             let totalCount = 0;
@@ -27,6 +28,30 @@ function getUniqueUserCount(chainId) {
     });
 }
 
+function getUniqueUserCount() {
+    return new Promise(async (resolve, reject) => {
+        let uniqueUserCount = 0;
+        try {
+            const fetchOptions = {
+                method: "GET",
+                headers: {
+                  'Content-Type': 'application/json;charset=utf-8'
+                }
+            }
+            let response = await fetch(`${config.hyphen.baseURL}${config.hyphen.getUniqueUserCountPath}`, fetchOptions);
+            if(response) {
+                response = await response.json();
+                uniqueUserCount = response.uniqueUserCount;
+            }
+
+            resolve(uniqueUserCount);
+        } catch(error) {
+            reject(error);
+        }
+    });
+}
+
 export {
-    getUniqueUserCount
+    getUniqueUserCount,
+    getUniqueUserCountByChain
 }
