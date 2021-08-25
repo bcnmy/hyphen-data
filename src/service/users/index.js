@@ -9,16 +9,28 @@ function getUniqueUserCountByChain(chainId) {
                 return reject("Invalid chainId passed as parameter. Please check the inputs");
             }
 
-            let query = `query {
-                uniqueWallets(first: 1000) {
-                    id
-                }
-            }`
-            let data = await executeQuery(chainId, query);
-            if(data && data.data && data.data.uniqueWallets) {
-                let aggregateData = data.data.uniqueWallets;
-                if(aggregateData) {
-                    totalCount = aggregateData.length;
+            let endOfData = false;
+            let skip = 0;
+            while(!endOfData) {
+
+                let query = `query {
+                    uniqueWallets(first: 1000, skip: ${skip}) {
+                        id
+                    }
+                }`
+                skip += 1000;
+                let data = await executeQuery(chainId, query);
+                if(data && data.data && data.data.uniqueWallets) {
+                    let aggregateData = data.data.uniqueWallets;
+                    if(aggregateData) {
+                        totalCount += aggregateData.length;
+                    }
+                    if(aggregateData.length == 0) {
+                        endOfData = true;
+                    }
+                } else {
+                    console.log(`No data returned from graph while getting unique user count for chain id ${chainId}`);
+                    endOfData = true;
                 }
             }
             resolve(totalCount);

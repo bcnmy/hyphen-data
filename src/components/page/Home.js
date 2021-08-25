@@ -86,8 +86,8 @@ export default function Home(props) {
             </div>
             <div className={classes.graphContainer}>
                 <div className={classes.graphComponentRow}>
-                    <DailyDepositGraph chainIds={supportedChainIds}/>
-                    <FeeEarnedGraph chainIds={supportedChainIds}/>
+                    <DailyDepositGraph chainIds={supportedChainIds} days={15}/>
+                    <FeeEarnedGraph chainIds={supportedChainIds} days={15}/>
                 </div>
                 <div className={classes.graphComponentRow}>
                     {config.supportedChainArrray && config.supportedChainArrray.length > 0 &&
