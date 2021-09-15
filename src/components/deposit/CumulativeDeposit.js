@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from  'clsx';
 import { getTotalDepositPerNetwork } from '../../service/deposit';
 import { config } from '../../config';
+import { useSelector, useDispatch } from 'react-redux';
 import CounterAllNetworks from '../basic/CounterAllNetworks';
 let numeral = require('numeral'); //http://numeraljs.com/
 
@@ -42,21 +43,23 @@ export default function CumulativeDeposit(props) {
 
     const [totalDeposit, setTotalDeposit] = useState("");
     const [label, setLabel] = useState();
+    const version = useSelector(state => state.root.version);
 
     useEffect(()=>{
+        setTotalDeposit("");
         let chainIds = props.chainIds;
 
         if(chainIds) {
             fetchTotalDeposit(chainIds);
         }
-    }, []);
+    }, [version]);
 
     let fetchTotalDeposit = async (chainIds) => {
         try {
             let _totalDeposit = 0;
             for(let index = 0; index < chainIds.length; index++) {
                 let item = chainIds[index];
-                _totalDeposit += await getTotalDepositPerNetwork(item);
+                _totalDeposit += await getTotalDepositPerNetwork(item, version);
             }
             
             if(_totalDeposit != undefined) {

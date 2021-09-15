@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { scaleBand } from '@devexpress/dx-chart-core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import clsx from  'clsx';
+import { useSelector, useDispatch } from 'react-redux';
 import {
     Chart,
     BarSeries,
@@ -45,6 +45,9 @@ export default function DailyDepositGraph(props) {
     const classes = useStyles();
     const [dailyDeposits, setDailyDeposits] = useState([]);
     const [chainNameArray, setChainNameArray] = useState();
+
+    const version = useSelector(state => state.root.version);
+
     useEffect(()=>{
         const now = Date.now();
         let chainIds = props.chainIds;
@@ -61,16 +64,15 @@ export default function DailyDepositGraph(props) {
             setChainNameArray(_chainNameArray);
             fetchDailyDepositUSD(props.chainIds, startTime, endTime);
         }
-    }, []);
+    }, [version]);
 
     let fetchDailyDepositUSD = async (chainIds, startTime, endTime) => {
         try {
             let dailyDepositMap = {}
             for(let index = 0; index < chainIds.length; index++) {
                 let item = chainIds[index];
-                dailyDepositMap[item] = await getDailyDepositsUSD(item, startTime, endTime);
+                dailyDepositMap[item] = await getDailyDepositsUSD(item, startTime, endTime, version);
             }
-            console.log(dailyDepositMap);
             let dailyDepositArray = [];
 
             let dateArray= [];
@@ -94,7 +96,6 @@ export default function DailyDepositGraph(props) {
 
                 dailyDepositArray.push(obj);
             }
-            console.log(dailyDepositArray);
             setDailyDeposits(dailyDepositArray);
         } catch(error) {
             console.error(error);

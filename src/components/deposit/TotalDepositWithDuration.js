@@ -4,6 +4,7 @@ import clsx from  'clsx';
 import { getTotalDepositWithDuration } from '../../service/deposit';
 import { config } from '../../config';
 import CounterAllNetworks from '../basic/CounterAllNetworks';
+import { useSelector, useDispatch } from 'react-redux';
 let numeral = require('numeral'); //http://numeraljs.com/
 
 const useStyles = makeStyles({
@@ -16,6 +17,7 @@ export default function TotalDepositWithDuration(props) {
     const [totalDeposit, setTotalDeposit] = useState();
     const [previousDeposit, setPreviousDeposit] = useState();
     const [label, setLabel] = useState();
+    const version = useSelector(state => state.root.version);
 
     useEffect(()=>{
         const now = Date.now();
@@ -31,14 +33,14 @@ export default function TotalDepositWithDuration(props) {
                 fetchPreviousDurationDeposit(chainIds, startTime - (endTime - startTime), startTime);
             }
         }
-    }, []);
+    }, [version]);
 
     let fetchTotalDeposit = async (chainIds, startTime, endTime) => {
         try {
             let _totalDeposit = 0;
             for(let index = 0; index < chainIds.length; index++) {
                 let item = chainIds[index];
-                _totalDeposit += await getTotalDepositWithDuration(item, startTime, endTime);
+                _totalDeposit += await getTotalDepositWithDuration(item, startTime, endTime, version);
             }
             
             if(_totalDeposit != undefined) {
@@ -58,7 +60,7 @@ export default function TotalDepositWithDuration(props) {
             let _totalDeposit = 0;
             for(let index = 0; index < chainIds.length; index++) {
                 let item = chainIds[index];
-                _totalDeposit += await getTotalDepositWithDuration(item, startTime, endTime);
+                _totalDeposit += await getTotalDepositWithDuration(item, startTime, endTime, version);
             }
             
             if(_totalDeposit != undefined) {

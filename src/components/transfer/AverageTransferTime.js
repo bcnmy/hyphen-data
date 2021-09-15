@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { useSelector, useDispatch } from 'react-redux'
 import clsx from  'clsx';
 import Counter from '../basic/Counter';
 import { getDepositTransactions } from '../../service/deposit';
@@ -44,6 +45,8 @@ export default function AverageTransferTime(props) {
     const [toChainId, setToChainId] = useState(props.toChainId);
     const [averageTimeArray, setAverageTimeArray] = useState([]);
 
+    const version = useSelector(state => state.root.version);
+
     useEffect(()=>{
         if(fromChainId && toChainId) {
             fetchAverageTransferTime(fromChainId, toChainId, 30);
@@ -58,12 +61,12 @@ export default function AverageTransferTime(props) {
     }, [averageTimeArray]);
 
     const fetchAverageTransferTime = async (fromChainId, toChainId, numOfTransactions) => {
-        let depositTransactions = await getDepositTransactions(fromChainId, toChainId, numOfTransactions);
+        let depositTransactions = await getDepositTransactions(fromChainId, toChainId, version, numOfTransactions);
         if(depositTransactions && depositTransactions.length > 0) {
             for(let index=0; index<depositTransactions.length; index++) {
                 (async (depositTransaction)=>{
                     let startTime = parseInt(depositTransaction.timestamp);
-                    let transferData = await getTransferTransaction(toChainId, depositTransaction.id);
+                    let transferData = await getTransferTransaction(toChainId, depositTransaction.id, version);
                     if(transferData) {
                         let endTime = parseInt(transferData.timestamp);
                         let timeDiff = parseInt(endTime - startTime)*1000;

@@ -1,7 +1,8 @@
 import { executeQuery } from '../subgraph';
 import { getFormattedValue, getDollarValue } from '../token';
+import { config } from '../../config';
 
-function getDailyFee(chainId, startTime, endTime) {
+function getDailyFee(chainId, startTime, endTime, version) {
     return new Promise(async (resolve, reject) => {
         try {
             if(!chainId) {
@@ -19,7 +20,7 @@ function getDailyFee(chainId, startTime, endTime) {
                   epochTime
                 }
             }`
-            let data = await executeQuery(chainId, query);
+            let data = await executeQuery(chainId, query, version);
 
             let feeMap = new Map();
             if(data && data.data && data.data.feePerDays) {
@@ -32,7 +33,7 @@ function getDailyFee(chainId, startTime, endTime) {
                             currentFee = 0;
                         }
                         let formattedValue = getFormattedValue({rawValue: entry.totalFee, chainId, tokenAddress: entry.tokenAddress});
-                        currentFee += parseFloat(getDollarValue(formattedValue));
+                        currentFee += parseFloat(getDollarValue(formattedValue, entry.tokenAddress));
                         feeMap.set(entry.epochTime, currentFee);
                     }
                 } else {

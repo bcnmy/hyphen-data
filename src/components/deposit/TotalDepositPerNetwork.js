@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from  'clsx';
+import { useSelector, useDispatch } from 'react-redux';
 import { getTotalDepositPerNetwork } from '../../service/deposit';
 import { config } from '../../config';
 import CounterPerNetwork from '../basic/CounterPerNetwork';
@@ -43,8 +44,10 @@ export default function TotalDepositPerNetwork(props) {
     const [totalDeposit, setTotalDeposit] = useState("");
     const [networkName, setNetworkName] = useState("");
     const [label, setLabel] = useState();
+    const version = useSelector(state => state.root.version);
 
     useEffect(()=>{
+        setTotalDeposit("");
         let chainId = props.chainId;
 
         if(chainId) {
@@ -55,11 +58,11 @@ export default function TotalDepositPerNetwork(props) {
                 setNetworkName(networkInfo.name);
             }
         }
-    }, []);
+    }, [version]);
 
     let fetchTotalDeposit = async (chainId) => {
         try {
-            let _totalDeposit = await getTotalDepositPerNetwork(chainId);
+            let _totalDeposit = await getTotalDepositPerNetwork(chainId, version);
             if(_totalDeposit != undefined) {
                 // Format Data here
                 setTotalDeposit(_totalDeposit);

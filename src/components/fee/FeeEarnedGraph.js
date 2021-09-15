@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { scaleBand } from '@devexpress/dx-chart-core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import clsx from  'clsx';
+import { useSelector, useDispatch } from 'react-redux';
 import {
     Chart,
     BarSeries,
@@ -46,6 +46,8 @@ export default function FeeEarnedGraph(props) {
     const [dailyFee, setDailyFee] = useState([]);
     const [chainNameArray, setChainNameArray] = useState();
 
+    const version = useSelector(state => state.root.version);
+
     useEffect(()=>{
         const now = Date.now();
         let chainIds = props.chainIds;
@@ -62,14 +64,14 @@ export default function FeeEarnedGraph(props) {
             setChainNameArray(_chainNameArray);
             fetchDailyFee(props.chainIds, startTime, endTime);
         }
-    }, []);
+    }, [version]);
 
     let fetchDailyFee = async (chainIds, startTime, endTime) => {
         try {
             let dailyDepositMap = {}
             for(let index = 0; index < chainIds.length; index++) {
                 let item = chainIds[index];
-                dailyDepositMap[item] = await getDailyFee(item, startTime, endTime);
+                dailyDepositMap[item] = await getDailyFee(item, startTime, endTime, version);
             }
 
             let dailyDepositArray = [];
