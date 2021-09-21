@@ -88,7 +88,8 @@ export default function TransferDetails(props) {
 
     let networkId = useSelector(state => state.search.networkId);
     let searchText = useSelector(state => state.search.searchText);
-    
+    const version = useSelector(state => state.root.version);
+
     const [notFoundText, setNotFoundText] = useState("Fetching data ...");
     const [transferData, setTransferData] = useState();
     const [depositData, setDepositData] = useState();
@@ -97,7 +98,7 @@ export default function TransferDetails(props) {
     let fetchTransferDetails = async (_networkId, _searchText) => {
         setTransferData();
         setDepositData();
-        let depositData = await getDepositData(_networkId, _searchText);
+        let depositData = await getDepositData(_networkId, _searchText, version);
         if(depositData) {
             let tokenInfo = config.tokenAddressMap[depositData.tokenAddress.toLowerCase()][_networkId];
             if(tokenInfo) {
@@ -105,7 +106,7 @@ export default function TransferDetails(props) {
             }
             setDepositData(depositData);
 
-            let transferData = await getTransferData(depositData.toChainId, _searchText);
+            let transferData = await getTransferData(depositData.toChainId, _searchText, version);
             if(transferData) {
                 let tokenInfo = config.tokenAddressMap[transferData.tokenAddress][depositData.toChainId];
                 if(tokenInfo) {

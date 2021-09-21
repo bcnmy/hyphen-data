@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from  'clsx';
 import { getUniqueUserCount, getUniqueUserCountByChain } from '../../service/users';
 import { config } from '../../config';
+import { useSelector, useDispatch } from 'react-redux';
 import CounterAllNetworks from '../basic/CounterAllNetworks';
 let numeral = require('numeral'); //http://numeraljs.com/
 
@@ -41,20 +42,22 @@ export default function UniqueWalletCount(props) {
     const classes = useStyles();
 
     const [uniqueWalletCount, setUniqueWalletCount] = useState("");
+    const version = useSelector(state => state.root.version);
 
     useEffect(()=>{
+        setUniqueWalletCount("");
         let chainIds = props.chainIds;
 
         if(chainIds) {
             fetchUniqueWalletCount(chainIds);
         }
-    }, []);
+    }, [version]);
 
     let fetchUniqueWalletCount = async (chainIds) => {
         try {
             let uniqueUserCount;
             if(chainIds && chainIds.length == 1) {
-                uniqueUserCount = await getUniqueUserCountByChain(chainIds[0]);
+                uniqueUserCount = await getUniqueUserCountByChain(chainIds[0], version);
             } else {
                 uniqueUserCount = await getUniqueUserCount();
             }

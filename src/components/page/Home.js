@@ -92,7 +92,14 @@ export default function Home(props) {
                 <div className={classes.graphComponentRow}>
                     {config.supportedChainArrray && config.supportedChainArrray.length > 0 &&
                         config.supportedChainArrray.map((item, index)=>(
-                            <AvailableLiquidity chainId={item.chainId} key={`AL_${index}`}/>
+                            <AvailableLiquidity chainId={item.chainId} supportedTokenSymbols={["USDT", "USDC"]} key={`AL_${index}`}/>
+                        ))
+                    }
+                </div>
+                <div className={classes.graphComponentRow}>
+                    {config.supportedChainArrray && config.supportedChainArrray.length > 0 &&
+                        config.supportedChainArrray.map((item, index)=>(
+                            <AvailableLiquidity chainId={item.chainId} supportedTokenSymbols={["ETH"]} key={`AL_${index}`}/>
                         ))
                     }
                 </div>

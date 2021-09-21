@@ -1,7 +1,8 @@
 import { executeQuery } from '../subgraph';
 import { getFormattedValue, getDollarValue } from '../token';
+import { config } from '../../config';
 
-function getTotalDeposit(chainId, tokenAddress) {
+function getTotalDeposit(chainId, tokenAddress, version) {
     return new Promise(async (resolve, reject) => {
         try {
             let totalDeposit;
@@ -17,7 +18,7 @@ function getTotalDeposit(chainId, tokenAddress) {
                   amount
                 }
             }`
-            let data = await executeQuery(chainId, query);
+            let data = await executeQuery(chainId, query, version);
             if(data && data.data && data.data.depositAggregatedDatas) {
                 let aggregateData = data.data.depositAggregatedDatas;
                 if(aggregateData.length > 0) {
@@ -35,7 +36,7 @@ function getTotalDeposit(chainId, tokenAddress) {
     });
 }
 
-function getTotalDepositPerNetwork(chainId) {
+function getTotalDepositPerNetwork(chainId, version) {
     return new Promise(async (resolve, reject) => {
         try {
             let totalDeposit = 0;
@@ -49,7 +50,7 @@ function getTotalDepositPerNetwork(chainId) {
                   amount
                 }
             }` 
-            let data = await executeQuery(chainId, query);
+            let data = await executeQuery(chainId, query, version);
             if(data && data.data && data.data.depositAggregatedDatas) {
                 let aggregateData = data.data.depositAggregatedDatas;
                 if(aggregateData.length > 0) {
@@ -58,7 +59,7 @@ function getTotalDepositPerNetwork(chainId) {
                         let _totalDeposit = aggregateData[index].amount;
                         let tokenAddress = aggregateData[index].id;
                         _totalDeposit = getFormattedValue({rawValue: _totalDeposit, chainId, tokenAddress})
-                        _totalDeposit = getDollarValue(_totalDeposit);
+                        _totalDeposit = getDollarValue(_totalDeposit, tokenAddress);
                         totalDeposit = totalDeposit + parseFloat(_totalDeposit);
                     }
                 } else {
@@ -73,7 +74,7 @@ function getTotalDepositPerNetwork(chainId) {
     });
 }
 
-function getTotalDepositWithDuration(chainId, startTime, endTime) {
+function getTotalDepositWithDuration(chainId, startTime, endTime, version) {
     return new Promise(async (resolve, reject) => {
         try {
             let totalDeposit = 0;
@@ -88,7 +89,7 @@ function getTotalDepositWithDuration(chainId, startTime, endTime) {
                     amount
                 }
             }`
-            let data = await executeQuery(chainId, query);
+            let data = await executeQuery(chainId, query, version);
             if(data && data.data && data.data.fundsDepositeds) {
                 let depositData = data.data.fundsDepositeds;
                 if(depositData.length > 0) {
@@ -97,7 +98,7 @@ function getTotalDepositWithDuration(chainId, startTime, endTime) {
                         let _totalDeposit = depositData[index].amount;
                         let tokenAddress = depositData[index].tokenAddress;
                         _totalDeposit = getFormattedValue({rawValue: _totalDeposit, chainId, tokenAddress})
-                        _totalDeposit = getDollarValue(_totalDeposit);
+                        _totalDeposit = getDollarValue(_totalDeposit, tokenAddress);
                         totalDeposit = totalDeposit + parseFloat(_totalDeposit);
                     }
                 } else {
@@ -112,7 +113,7 @@ function getTotalDepositWithDuration(chainId, startTime, endTime) {
     });
 }
 
-function getDailyDepositsUSD(chainId, startTime, endTime) {
+function getDailyDepositsUSD(chainId, startTime, endTime, version) {
     return new Promise(async (resolve, reject) => {
         try {
             if(!chainId) {
@@ -131,7 +132,7 @@ function getDailyDepositsUSD(chainId, startTime, endTime) {
                 }
             }`
 
-            let data = await executeQuery(chainId, query);
+            let data = await executeQuery(chainId, query, version);
             
             let volumeMap = {};
             if(data && data.data && data.data.volumePerDays) {
@@ -144,7 +145,7 @@ function getDailyDepositsUSD(chainId, startTime, endTime) {
                             currentVolume = 0;
                         }
                         let formattedValue = getFormattedValue({rawValue: entry.totalAmount, chainId, tokenAddress: entry.tokenAddress});
-                        currentVolume += parseFloat(getDollarValue(formattedValue));
+                        currentVolume += parseFloat(getDollarValue(formattedValue, entry.tokenAddress));
                         volumeMap[entry.epochTime] = currentVolume;
                     }
                 } else {
@@ -158,7 +159,7 @@ function getDailyDepositsUSD(chainId, startTime, endTime) {
     });
 }
 
-let getDepositData = (chainId, depositHash) => {
+let getDepositData = (chainId, depositHash, version) => {
     return new Promise(async (resolve, reject) => {
         try {
             let depositData;
@@ -173,12 +174,12 @@ let getDepositData = (chainId, depositHash) => {
                     amount
                 }
             }`
-            let data = await executeQuery(chainId, query);
+            let data = await executeQuery(chainId, query, version);
             if(data && data.data && data.data.fundsDepositeds && data.data.fundsDepositeds.length > 0) {
                 depositData = {...data.data.fundsDepositeds[0]};
                 if(depositData.amount != undefined) {
                     depositData.formattedAmount = getFormattedValue({rawValue: depositData.amount, chainId, tokenAddress: depositData.tokenAddress});
-                    depositData.formattedAmountUSD = getDollarValue(depositData.formattedAmount);
+                    depositData.formattedAmountUSD = getDollarValue(depositData.formattedAmount, depositData.tokenAddress);
                 }
             }
             resolve(depositData);
@@ -188,7 +189,7 @@ let getDepositData = (chainId, depositHash) => {
     });
 }
 
-let getDepositTransactions = (fromChainId, toChainId, numOfTransactions=30) => {
+let getDepositTransactions = (fromChainId, toChainId, version, numOfTransactions=30) => {
     return new Promise(async (resolve, reject) => {
         try {
             if(!fromChainId || !toChainId) {
@@ -202,12 +203,14 @@ let getDepositTransactions = (fromChainId, toChainId, numOfTransactions=30) => {
                   tokenAddress
                 }
             }`
-            let data = await executeQuery(fromChainId, query);
+
+            let data = await executeQuery(fromChainId, query, version);
 
             let depositTransactions = [];
             if(data && data.data && data.data.fundsDepositeds) {
                 depositTransactions = data.data.fundsDepositeds;
             }
+
             resolve(depositTransactions);
         } catch(error) {
             reject(error);

@@ -1,7 +1,7 @@
 import { executeQuery } from '../subgraph';
 import { config } from '../../config';
 
-function getUniqueUserCountByChain(chainId) {
+function getUniqueUserCountByChain(chainId, version) {
     return new Promise(async (resolve, reject) => {
         try {
             let totalCount = 0;
@@ -19,7 +19,7 @@ function getUniqueUserCountByChain(chainId) {
                     }
                 }`
                 skip += 1000;
-                let data = await executeQuery(chainId, query);
+                let data = await executeQuery(chainId, query, version);
                 if(data && data.data && data.data.uniqueWallets) {
                     let aggregateData = data.data.uniqueWallets;
                     if(aggregateData) {

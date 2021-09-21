@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import clsx from  'clsx';
 import { config } from '../../config';
+import { useSelector, useDispatch } from 'react-redux';
 import { getBalance, getLiquidityAdded } from '../../service/token';
 import {
     Chart,
@@ -44,26 +45,30 @@ export default function AvailableLiquidity(props) {
     const [error, setError] = useState();
     const [liquidityData, setLiquidityData] = useState([]);
 
+    const version = useSelector(state => state.root.version);
+
     useEffect(()=>{
+        setLiquidityData([]);
         let chainId = props.chainId;
         if(chainId) {
             fetchAvailableLiquidity(chainId);
         } else {
             setError("No chainId passed to component");
         }
-    }, []);
+    }, [version]);
 
     const fetchAvailableLiquidity = async (chainId) => {
         try {
-            let supportedTokens = config.supportedTokenSymbols;
+            let supportedTokens = props.supportedTokenSymbols;
             let _liquidityData = [];
             for(let index = 0; index < supportedTokens.length; index++) {
                 let tokenSymbol = supportedTokens[index];
                 let tokenInfo = config.tokensMap[tokenSymbol][chainId];
                 if(tokenInfo) {
                     let tokenAddress = tokenInfo.address;
-                    let tokenBalance = await getBalance(tokenAddress, chainId, config.chainIdMap[chainId].LPManagerAddress);
-                    let liquidityAdded = await getLiquidityAdded(tokenAddress, chainId, config.chainIdMap[chainId].LPManagerAddress);
+                    let lpManagerAddress = config.chainIdMap[chainId].LPManagerAddress[version];
+                    let tokenBalance = await getBalance(tokenAddress, chainId, lpManagerAddress);
+                    let liquidityAdded = await getLiquidityAdded(tokenAddress, chainId, lpManagerAddress);
                     if(tokenBalance != undefined) {
                         tokenBalance = parseFloat(tokenBalance);
                         _liquidityData.push({tokenSymbol, liquidity: tokenBalance, totalLiquidity: parseFloat(liquidityAdded)});

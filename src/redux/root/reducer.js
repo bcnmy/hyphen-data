@@ -5,7 +5,8 @@ import {
 import { config } from '../../config';
 
 const initialState = {
-  currentPage: config.PAGE.HOME
+  currentPage: config.PAGE.HOME,
+  version: "v2"
 }
 
 const reducer = (state = initialState, action) => {

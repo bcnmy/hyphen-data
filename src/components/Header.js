@@ -3,6 +3,7 @@ import SearchBar from './search/SearchBar';
 import { useDispatch } from 'react-redux'
 import { config } from '../config';
 import { updateRootState } from '../redux';
+import VersionSwitch from './version/VersionSwitch';
 
 const useStyles = makeStyles({
   root: {
@@ -17,7 +18,8 @@ const useStyles = makeStyles({
       top: "0px",
       left: "0px",
       width: "100%",
-      height: "71px"
+      height: "71px",
+      zIndex: "10"
   },
   heading: {
     cursor: "pointer",
@@ -32,7 +34,13 @@ const useStyles = makeStyles({
   logo: {
     width: "24px",
     marginRight: "5px"
-}
+  },
+  filterContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
+  }
 });
 
 export default function Header(props) {
@@ -48,7 +56,10 @@ export default function Header(props) {
                 <img src={props.logo} alt={props.title} className={classes.logo}/>
                 {props.title}
             </div>
-            <SearchBar />
+            <div className={classes.filterContainer}>
+                <VersionSwitch />
+                <SearchBar />
+            </div>
         </div>
     )
 }

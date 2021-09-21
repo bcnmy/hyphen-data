@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import clsx from  'clsx';
 import { getTotalDeposit } from '../../service/deposit';
 import { config } from '../../config';
+import { useSelector, useDispatch } from 'react-redux';
 let numeral = require('numeral'); //http://numeraljs.com/
 
 const useStyles = makeStyles({
@@ -37,8 +38,10 @@ export default function TotalDepositPerToken(props) {
 
     const [totalDeposit, setTotalDeposit] = useState("");
     const [networkName, setNetworkName] = useState("");
-
+    const version = useSelector(state => state.root.version);
+    
     useEffect(()=>{
+        setTotalDeposit("");
         let chainId = props.chainId;
         let tokenSymbol = props.tokenSymbol;
 
@@ -54,11 +57,11 @@ export default function TotalDepositPerToken(props) {
                 setNetworkName(networkInfo.name);
             }
         }
-    }, []);
+    }, [version]);
 
     let fetchTotalDeposit = async (chainId, tokenAddress) => {
         try {
-            let _totalDeposit = await getTotalDeposit(chainId, tokenAddress);
+            let _totalDeposit = await getTotalDeposit(chainId, tokenAddress, version);
             if(_totalDeposit != undefined) {
                 // Format Data here
                 _totalDeposit = numeral(_totalDeposit).format('0.00a');

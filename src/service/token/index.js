@@ -5,7 +5,7 @@ import { getProvider } from "../provider";
 let LPManagerContractMap = {};
 let tokenContractPerChain = {};
 
-function getFormattedValue({rawValue, chainId, tokenSymbol, tokenAddress, decimalPlace = 2}) {
+function getFormattedValue({rawValue, chainId, tokenSymbol, tokenAddress, decimalPlace = 8}) {
     if(rawValue == undefined || !chainId) {
         throw new Error(`Invalid rawValue: ${rawValue} or chainId: ${chainId}`);
     }
@@ -21,10 +21,15 @@ function getFormattedValue({rawValue, chainId, tokenSymbol, tokenAddress, decima
         formattedValue = rawValue / BigNumber.from(10).pow(tokenInfo.decimal).toString();
         if (formattedValue != undefined) formattedValue = formattedValue.toFixed(decimalPlace);
     }
+    console.log(`${tokenAddress} formattedValue : ${formattedValue}`);
     return formattedValue;
 }
 
-function getDollarValue(amount, symbol) {
+function getDollarValue(amount, tokenAddress) {
+    if(tokenAddress && (tokenAddress == config.NATIVE_TOKEN_ADDRESS || tokenAddress.toLowerCase() == "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619")){
+        return amount*3550
+    }
+
     return amount;
 }
 
@@ -65,11 +70,19 @@ function getBalance(tokenAddress, chainId, holder) {
             tokenContract = tokensMap[tokenAddress];
         }
 
-        if(!tokenContract) {
-            let provider = await getProvider(chainId);
-            tokenContract = new ethers.Contract(tokenAddress, config.ERC20_ABI, provider);
+        let provider = await getProvider(chainId);
+        if(tokenAddress == config.NATIVE_TOKEN_ADDRESS){
+            balance = await provider.getBalance(holder);
+            console.log(`Native balance: ${balance}`);
         }
-        balance = await tokenContract.balanceOf(holder);
+
+        else {
+            if(!tokenContract) {
+                tokenContract = new ethers.Contract(tokenAddress, config.ERC20_ABI, provider);
+            }
+            balance = await tokenContract.balanceOf(holder);
+        }
+
         if(balance) {
             balance = getFormattedValue({rawValue: balance, chainId: chainId, tokenAddress: tokenAddress});
         }

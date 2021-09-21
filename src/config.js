@@ -3,6 +3,7 @@ import EthereumLogo from "./assets/Ethereum.png";
 import USDCLogo from "./assets/usdc.png";
 import USDTLogo from "./assets/usdt.png";
 import DAILogo from "./assets/dai.png";
+import ETHLogo from "./assets/Ethereum.png";
 
 const abiDecoder = require('abi-decoder');
 
@@ -19,7 +20,8 @@ config.getEnv = getEnv;
 config.tokenLogoMap = {
     "USDC": USDCLogo,
     "USDT": USDTLogo,
-    "DAI": DAILogo
+    "DAI": DAILogo,
+    "ETH": ETHLogo
 }
 
 config.chainLogoMap = {
@@ -39,9 +41,15 @@ let MUMBAI = {
     currency: "Test MATIC",
     nativeFaucetURL: "https://faucet.matic.network/",
     assetSentTopicId: "0xec1dcc5633614eade4a5730f51adc7444a5103a8477965a32f2e886f5b20f694",
-    graphURL : "https://api.thegraph.com/subgraphs/name/divyan73/lpmanagermumbai",
+    graphURL : {
+        v1: "https://api.thegraph.com/subgraphs/name/divyan73/lpmanagermumbai",
+        v2: "https://api.thegraph.com/subgraphs/name/divyan73/lpmanagermumbai"
+    },
     color: polygonColor,
-    LPManagerAddress: "0x65d8bf5a792ad32ee884f77301e8d6b11fbb21b3"
+    LPManagerAddress: {
+        v1: "0x65d8bf5a792ad32ee884f77301e8d6b11fbb21b3",
+        v2: "0x65d8bf5a792ad32ee884f77301e8d6b11fbb21b3"
+    }
 }
 let ETHEREUM = { 
     name: "Ethereum",
@@ -51,9 +59,15 @@ let ETHEREUM = {
     currency: "ETH",
     nativeFaucetURL: "",
     assetSentTopicId: "0xec1dcc5633614eade4a5730f51adc7444a5103a8477965a32f2e886f5b20f694",
-    graphURL : "https://api.thegraph.com/subgraphs/name/divyan73/hyphen-ethereum",
+    graphURL : {
+        v1: "https://api.thegraph.com/subgraphs/name/divyan73/hyphen-ethereum",
+        v2: "https://api.thegraph.com/subgraphs/name/divyan73/hyphenethereumv2"
+    },
     color: ethereumColor,
-    LPManagerAddress: "0x246f48bf00427d9abb3d44caa709b1a90377ed90"
+    LPManagerAddress: {
+        v1: "0x246f48bf00427d9abb3d44caa709b1a90377ed90",
+        v2: "0xf78765bd14b4e8527d9e4e5c5a5c11a44ad12f47"
+    }
 }
 let MATIC = { 
     name: "Polygon",
@@ -63,9 +77,15 @@ let MATIC = {
     currency: "MATIC",
     nativeFaucetURL: "",
     assetSentTopicId: "0xec1dcc5633614eade4a5730f51adc7444a5103a8477965a32f2e886f5b20f694",
-    graphURL : "https://api.thegraph.com/subgraphs/name/divyan73/hyphenpolygon",
+    graphURL : {
+        v1: "https://api.thegraph.com/subgraphs/name/divyan73/hyphenpolygon",
+        v2: "https://api.thegraph.com/subgraphs/name/divyan73/hyphenpolygonv2"
+    },
     color: polygonColor,
-    LPManagerAddress: "0x246f48bf00427d9abb3d44caa709b1a90377ed90"
+    LPManagerAddress: {
+        v1: "0x246f48bf00427d9abb3d44caa709b1a90377ed90",
+        v2: "0xf78765bd14b4e8527d9e4e5c5a5c11a44ad12f47"
+    }
 }
 let GOERLI = { 
     name: "Goerli",
@@ -75,9 +95,15 @@ let GOERLI = {
     currency: "Goerli ETH",
     nativeFaucetURL: "https://faucet.goerli.mudit.blog/",
     assetSentTopicId: "0xec1dcc5633614eade4a5730f51adc7444a5103a8477965a32f2e886f5b20f694",
-    graphURL : "https://api.thegraph.com/subgraphs/name/divyan73/lpmanagergoerli",
+    graphURL : {
+       v1: "https://api.thegraph.com/subgraphs/name/divyan73/lpmanagergoerli",
+       v2: "https://api.thegraph.com/subgraphs/name/divyan73/lpmanagergoerli"
+    },
     color: ethereumColor,
-    LPManagerAddress: "0x67e040c687e8a5b6e6b57988284ebc77c905a61c"
+    LPManagerAddress: {
+        v1: "0x67e040c687e8a5b6e6b57988284ebc77c905a61c",
+        v2: "0x67e040c687e8a5b6e6b57988284ebc77c905a61c"
+    }
 }
 
 let chains;
@@ -96,7 +122,7 @@ config.chainIdMap = {};
 let supportedChainArrray = Object.values(chains);
 config.supportedChainArrray = supportedChainArrray;
 
-config.supportedTokenSymbols = ["USDC","USDT"];
+config.supportedTokenSymbols = ["USDC","USDT","ETH"];
 
 for(let index = 0; index < supportedChainArrray.length; index++) {
     let currentChain = supportedChainArrray[index];
@@ -107,25 +133,25 @@ config.tokensMap = {
     "USDT" : {
         80001: {
             address: "0xeaBc4b91d9375796AA4F69cC764A4aB509080A58",
-            transferOverhead: 86147,
+            transferOverhead: 61373,
             decimal: 18,
             symbol: "USDT"
         },
         5: {
             address: "0x64ef393b6846114bad71e2cb2ccc3e10736b5716",
-            transferOverhead: 107848,
+            transferOverhead: 61373,
             decimal: 18,
             symbol: "USDT"
         },
         137: {
             address: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
-            transferOverhead: 107848,
+            transferOverhead: 61373,
             decimal: 6,
             symbol: "USDT"
         },
         1: {
             address: "0xdac17f958d2ee523a2206206994597c13d831ec7",
-            transferOverhead: 107848,
+            transferOverhead: 61373,
             decimal: 6,
             symbol: "USDT"
         }
@@ -133,25 +159,25 @@ config.tokensMap = {
     "USDC" : {
         80001: {
             address: "0xdA5289fCAAF71d52a80A254da614a192b693e977",
-            transferOverhead: 86099,
+            transferOverhead: 53083,
             decimal: 6,
             symbol: "USDC"
         },
         5: {
             address: "0xb5B640E6414b6DeF4FC9B3C1EeF373925effeCcF",
-            transferOverhead: 102494,
+            transferOverhead: 53083,
             decimal: 6,
             symbol: "USDC"
         },
         137: {
             address: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
-            transferOverhead: 102494,
+            transferOverhead: 53083,
             decimal: 6,
             symbol: "USDC"
         },
         1: {
             address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-            transferOverhead: 102494,
+            transferOverhead: 53083,
             decimal: 6,
             symbol: "USDC"
         }
@@ -182,6 +208,32 @@ config.tokensMap = {
             symbol: "DAI"
         }
     },
+    "ETH" : {
+        80001: {
+            address: "0xa6fa4fb5f76172d178d61b04b0ecd319c5d1c0aa",
+            transferOverhead: 40789,
+            decimal: 18,
+            symbol: "ETH"
+        },
+        5: {
+            address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            transferOverhead: 40789,
+            decimal: 18,
+            symbol: "ETH"
+        },
+        137: {
+            address: "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+            transferOverhead: 40789,
+            decimal: 18,
+            symbol: "ETH"
+        },
+        1: {
+            address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            transferOverhead: 40789,
+            decimal: 18,
+            symbol: "ETH"
+        }
+    },
 
 }
 
@@ -200,6 +252,11 @@ config.tokenAddressMap = {
     "0x27a44456bEDb94DbD59D0f0A14fE977c777fC5C3" : {80001 : config.tokensMap["DAI"][80001]},
     "0x6b175474e89094c44da98b954eedeac495271d0f" : {1 : config.tokensMap["DAI"][1]},
     "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063" : {137 : config.tokensMap["DAI"][137]},
+
+    "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : {5 : config.tokensMap["ETH"][5]},
+    "0xa6fa4fb5f76172d178d61b04b0ecd319c5d1c0aa" : {80001 : config.tokensMap["ETH"][80001]},
+    "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : {1 : config.tokensMap["ETH"][1]},
+    "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619" : {137 : config.tokensMap["ETH"][137]},
 }
 
 config.explorerURLMap = {
@@ -250,12 +307,14 @@ config.supportedToken = {
     5: {
         "DAI": "0x2686eca13186766760a0347ee8eeb5a88710e11b",
         "USDT": "0x64ef393b6846114bad71e2cb2ccc3e10736b5716",
-        "USDC": "0xb5b640e6414b6def4fc9b3c1eef373925effeccf"
+        "USDC": "0xb5b640e6414b6def4fc9b3c1eef373925effeccf",
+        "ETH": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
     },
     80001: {
         "DAI": "0x27a44456bedb94dbd59d0f0a14fe977c777fc5c3",
         "USDC": "0xda5289fcaaf71d52a80a254da614a192b693e977",
-        "USDT": "0xeabc4b91d9375796aa4f69cc764a4ab509080a58"
+        "USDT": "0xeabc4b91d9375796aa4f69cc764a4ab509080a58",
+        "ETH": "0xa6fa4fb5f76172d178d61b04b0ecd319c5d1c0aa"
     }
 }
 
@@ -289,9 +348,20 @@ config.tokenInfo = {
         decimal: 18,
         name: "DAI",
         network: 80001
+    },
+    "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee": {
+        decimal: 18,
+        name: "ETH",
+        network: 5
+    },
+    "0xa6fa4fb5f76172d178d61b04b0ecd319c5d1c0aa": {
+        decimal: 18,
+        name: "ETH",
+        network: 80001
     }
 }
 
+config.NATIVE_TOKEN_ADDRESS = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
 config.goerliRpc = `https://goerli.infura.io/v3/d126f392798444609246423b06116c77`;
 config.mumbaiRpc = `https://rpc-mumbai.matic.today`;
 config.ethereumRpc = ``;
