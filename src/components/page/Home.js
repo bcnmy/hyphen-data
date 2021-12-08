@@ -64,7 +64,7 @@ export default function Home(props) {
                         style={durationStyle}/>
                     <UniqueWalletCount title="Unique User Count" chainIds={supportedChainIds}
                         style={durationStyle}/>
-                    <AverageTransferTime style={durationStyle} fromChainId={supportedChainIds[0]} toChainId={supportedChainIds[1]}/>
+                    <AverageTransferTime style={durationStyle} fromChainId={supportedChainIds[0]} toChainId={supportedChainIds[2]}/>
                     {/* <TotalDepositPerNetwork chainId={5} title="Cumulative Volume"/>
                     <TotalDepositPerNetwork chainId={80001} title="Cumulative Volume"/> */}
 
