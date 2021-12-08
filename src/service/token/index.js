@@ -26,11 +26,25 @@ function getFormattedValue({rawValue, chainId, tokenSymbol, tokenAddress, decima
 }
 
 function getDollarValue(amount, tokenAddress) {
-    if(tokenAddress && (tokenAddress == config.NATIVE_TOKEN_ADDRESS || tokenAddress.toLowerCase() == "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619")){
-        return amount*3550
+    if(tokenAddress && isEthereumAddress(tokenAddress)){
+        return amount*4100
     }
-
     return amount;
+}
+
+function isEthereumAddress(tokenAddress) {
+    let result = false;
+    let ethDetails = config.tokensMap["ETH"];
+    if(ethDetails && tokenAddress) {
+        for(let key in ethDetails) {
+            let details = ethDetails[key];
+            if(details.address && tokenAddress.toLowerCase() === details.address.toLowerCase()) {
+                result = true;
+                break;
+            }
+        }
+    }
+    return result;
 }
 
 function getPoolInfo(tokenAddress, chainId, toChainId) {
