@@ -7,6 +7,9 @@ import { getDepositTransactions } from '../../service/deposit';
 import { getTransferTransaction } from '../../service/transfer';
 import { quantile } from '../../service/utils';
 import { config } from '../../config';
+import Select from '@material-ui/core/Select';
+import FormControl from '@material-ui/core/FormControl';
+import MenuItem from '@material-ui/core/MenuItem';
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 import Arrow from "../../assets/arrow.svg";
 
@@ -26,7 +29,6 @@ const useStyles = makeStyles({
         alignItems: "center"
     },
     swapIcon: {
-        cursor: "pointer",
         margin: "0px 10px"
     },
     chainName: {
@@ -41,26 +43,64 @@ export default function AverageTransferTime(props) {
     const classes = useStyles();
 
     const [averageTime, setAverageTime] = useState("...");
-    const [fromChainId, setFromChainId] = useState(props.fromChainId);
-    const [toChainId, setToChainId] = useState(props.toChainId);
     const [averageTimeArray, setAverageTimeArray] = useState([]);
+
+    const [selectedFromChain, setSelectedFromChain] = useState();
+    const [selectedToChain, setSelectedToChain] = useState();
+
+    const [sourceChains, setSourceChains] = useState(config.supportedChainArrray);
+    const [destinationChains, setDestinationChains] = useState();
 
     const version = useSelector(state => state.root.version);
 
+    // Set the selected from chain and we get all the source chains
     useEffect(()=>{
-        if(fromChainId && toChainId) {
-            fetchAverageTransferTime(fromChainId, toChainId, 30);
+        if(sourceChains && sourceChains.length > 0) {
+            if(config.chainIdMap && config.chainIdMap[props.fromChainId]) {
+                setSelectedFromChain(config.chainIdMap[props.fromChainId]);
+            } else {
+                setSelectedFromChain(sourceChains[0]);
+            }
+        }
+    }, [sourceChains]);
+
+    // Set the allowed destination chains, when selectedFromChain is set
+    useEffect(()=>{
+        if(selectedFromChain) {
+            let allowedDestinationChains = [];
+            for(let index in sourceChains) {
+                let chain = sourceChains[index];
+                if(chain.chainId != selectedFromChain.chainId) {
+                    allowedDestinationChains.push(sourceChains[index]);
+                }
+            }
+            setDestinationChains(allowedDestinationChains);
+            if(allowedDestinationChains && allowedDestinationChains.length > 0) {
+                if(selectedToChain && allowedDestinationChains.indexOf(selectedToChain) < 0) {
+                    setSelectedToChain(allowedDestinationChains[0]);
+                } else if(!selectedToChain && props.toChainId != undefined) {
+                    setSelectedToChain(config.chainIdMap[props.toChainId]);
+                }
+            }
+        }
+    }, [selectedFromChain]);
+
+    useEffect(()=>{
+        if(selectedFromChain && selectedToChain) {
+            fetchAverageTransferTime(selectedFromChain.chainId, selectedToChain.chainId, 30);
         }    
-    }, [fromChainId, toChainId]);
+    }, [selectedFromChain, selectedToChain]);
 
     useEffect(()=>{
         if(averageTimeArray && averageTimeArray.length > 0) {
-            let q95 = quantile(averageTimeArray, .95);
-            setAverageTime(ms(q95, {long: true}));
+            let q90 = quantile(averageTimeArray, .90);
+            setAverageTime(ms(q90, {long: true}));
         }
     }, [averageTimeArray]);
 
     const fetchAverageTransferTime = async (fromChainId, toChainId, numOfTransactions) => {
+        setAverageTimeArray([]);
+        setAverageTime(". . .");
         let depositTransactions = await getDepositTransactions(fromChainId, toChainId, version, numOfTransactions);
         if(depositTransactions && depositTransactions.length > 0) {
             for(let index=0; index<depositTransactions.length; index++) {
@@ -70,6 +110,7 @@ export default function AverageTransferTime(props) {
                     if(transferData) {
                         let endTime = parseInt(transferData.timestamp);
                         let timeDiff = parseInt(endTime - startTime)*1000;
+
                         setAverageTimeArray(oldArray => [...oldArray, timeDiff]);
                     }
                 })(depositTransactions[index]);
@@ -77,20 +118,28 @@ export default function AverageTransferTime(props) {
         }   
     }
 
-    let swapChains = ()=>{
-        setAverageTime("...");
-        setAverageTimeArray([]);
-        let _fromChainId = toChainId;
-        let _toChainId = fromChainId;
-        setFromChainId(_fromChainId);
-        setToChainId(_toChainId);
+    const onFromChainChanged = async (event) => {
+        const _chainId = event.target.value;
+        if(_chainId) {
+            setSelectedFromChain(config.chainIdMap[_chainId]);
+        }
     }
 
-    let chainInfo = <div className={classes.chainInfoContainer}>
-        <img className={classes.logoIcon} src={config.chainLogoMap[fromChainId]}/>
-        <SwapHorizIcon className={clsx(classes.logoIcon, classes.swapIcon)} onClick={swapChains}/>
-        <img className={classes.logoIcon} src={config.chainLogoMap[toChainId]}/>
-    </div>
+    const onToChainChanged = async (event) => {
+        const _chainId = event.target.value;
+        if(_chainId) {
+            setSelectedToChain(config.chainIdMap[_chainId]);
+        }
+    }
+
+    let swapChains = ()=>{
+        // setAverageTime("...");
+        // setAverageTimeArray([]);
+        // let _fromChainId = toChainId;
+        // let _toChainId = fromChainId;
+        // setFromChainId(_fromChainId);
+        // setToChainId(_toChainId);
+    }
 
     let label = <div style={{
         display: "flex",
@@ -100,17 +149,45 @@ export default function AverageTransferTime(props) {
     }}>
         <div>{averageTime}</div>
         <div className={classes.chainInfoContainer}>
-            <div className={classes.chainName}>
+            
+            {sourceChains && selectedFromChain &&
+                <FormControl variant="outlined" className={classes.chainName} size="small">
+                    <Select
+                        className={classes.chainName}
+                        value={selectedFromChain.chainId}
+                        onChange={onFromChainChanged}
+                        inputProps={{
+                            name: 'version',
+                            id: 'simple-select-outlined',
+                        }}>
+                        {sourceChains.map((item, index) => {
+                            return <MenuItem value={item.chainId} key={`ChainItem_${index}`}>{item.name}</MenuItem>;
+                        })}
+                    </Select>
+                </FormControl>
+            }
+            {/* <div className={classes.chainName}>
                 <img className={classes.logoIcon} src={config.chainLogoMap[fromChainId]}/>
                 {config.chainIdMap[fromChainId].name}
-            </div>
+            </div> */}
             
             <img src={Arrow} className={clsx(classes.logoIcon, classes.swapIcon)} onClick={swapChains}/>
             
-            <div className={classes.chainName}>
-                <img className={classes.logoIcon} src={config.chainLogoMap[toChainId]}/>
-                {config.chainIdMap[toChainId].name}
-            </div>
+            {destinationChains && selectedToChain &&
+                <FormControl variant="outlined" className={classes.chainName} size="small">
+                    <Select
+                        value={selectedToChain.chainId}
+                        onChange={onToChainChanged}
+                        inputProps={{
+                            name: 'version',
+                            id: 'simple-select-outlined',
+                        }}>
+                        {destinationChains.map((item, index) => {
+                            return <MenuItem value={item.chainId} key={`ChainItem_${index}`}>{item.name}</MenuItem>;
+                        })}
+                    </Select>
+                </FormControl>
+            }
         </div>
     </div>;
     return (

@@ -1,4 +1,5 @@
 import PolygonLogo from "./assets/polygon-matic-logo.png";
+import AvalancheLogo from "./assets/avalanche-logo.png";
 import EthereumLogo from "./assets/Ethereum.png";
 import USDCLogo from "./assets/usdc.png";
 import USDTLogo from "./assets/usdt.png";
@@ -28,10 +29,12 @@ config.chainLogoMap = {
     80001: PolygonLogo,
     5: EthereumLogo,
     137: PolygonLogo,
-    1: EthereumLogo
+    1: EthereumLogo,
+    43114: AvalancheLogo
 }
 let ethereumColor = "#868EAC";
 let polygonColor = "#8247E5";
+let avalancheColor = "#E94646";
 
 let MUMBAI = { 
     name: "Mumbai",
@@ -106,12 +109,30 @@ let GOERLI = {
     }
 }
 
+let AVA = { 
+    name: "Avalanche",
+    subText: "Avalanche mainnet",
+    chainId: 43114,
+    rpcUrl: "https://api.avax.network/ext/bc/C/rpc",
+    currency: "AVAX",
+    assetSentTopicId: "0xec1dcc5633614eade4a5730f51adc7444a5103a8477965a32f2e886f5b20f694",
+    graphURL : {
+        v1: "",
+        v2: "https://api.thegraph.com/subgraphs/name/divyan73/hyphen-avalanche"
+    },
+    color: avalancheColor,
+    LPManagerAddress: {
+        v1: "",
+        v2: "0xf78765bd14b4e8527d9e4e5c5a5c11a44ad12f47"
+    }
+};
+
 let chains;
 
 if(process.env.REACT_APP_ENV === TEST_ENVIRONMENT) {
     chains = { MUMBAI, GOERLI };
 } else if(process.env.REACT_APP_ENV === PROD_ENVIRONMENT) {
-    chains = { MATIC, ETHEREUM };
+    chains = { MATIC, ETHEREUM, AVA };
 } else {
     chains = { MUMBAI, GOERLI };
 }
@@ -154,6 +175,12 @@ config.tokensMap = {
             transferOverhead: 61373,
             decimal: 6,
             symbol: "USDT"
+        },
+        43114: {
+            address: "0xc7198437980c041c805a1edcba50c1ce5db95118",
+            transferOverhead: 107848,
+            decimal: 18,
+            symbol: "USDT"
         }
     },
     "USDC" : {
@@ -178,6 +205,12 @@ config.tokensMap = {
         1: {
             address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
             transferOverhead: 53083,
+            decimal: 6,
+            symbol: "USDC"
+        },
+        43114: {
+            address: "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664",
+            transferOverhead: 102494,
             decimal: 6,
             symbol: "USDC"
         }
@@ -232,6 +265,13 @@ config.tokensMap = {
             transferOverhead: 40789,
             decimal: 18,
             symbol: "ETH"
+        },
+        43114: {
+            address: "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
+            transferOverhead: 29766,
+            decimal: 18,
+            symbol: "ETH",
+            fixedDecimalPoint: 5
         }
     },
 
@@ -242,11 +282,13 @@ config.tokenAddressMap = {
     "0xeabc4b91d9375796aa4f69cc764a4ab509080a58" : {80001 : config.tokensMap["USDT"][80001]},
     "0xdac17f958d2ee523a2206206994597c13d831ec7" : {1 : config.tokensMap["USDT"][1]},
     "0xc2132d05d31c914a87c6611c10748aeb04b58e8f" : {137 : config.tokensMap["USDT"][137]},
+    "0xc7198437980c041c805a1edcba50c1ce5db95118" : {43114: config.tokensMap["USDT"][43114]},
 
     "0xb5b640e6414b6def4fc9b3c1eef373925effeccf" : {5 : config.tokensMap["USDC"][5]},
     "0xda5289fcaaf71d52a80a254da614a192b693e977" : {80001 : config.tokensMap["USDC"][80001]},
     "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" : {1 : config.tokensMap["USDC"][1]},
     "0x2791bca1f2de4661ed88a30c99a7a9449aa84174" : {137 : config.tokensMap["USDC"][137]},
+    "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664" : {43114: config.tokensMap["USDC"][43114]},
 
     "0x2686eca13186766760a0347ee8eeb5a88710e11b" : {5 : config.tokensMap["DAI"][5]},
     "0x27a44456bEDb94DbD59D0f0A14fE977c777fC5C3" : {80001 : config.tokensMap["DAI"][80001]},
@@ -257,13 +299,16 @@ config.tokenAddressMap = {
     "0xa6fa4fb5f76172d178d61b04b0ecd319c5d1c0aa" : {80001 : config.tokensMap["ETH"][80001]},
     "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" : {1 : config.tokensMap["ETH"][1]},
     "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619" : {137 : config.tokensMap["ETH"][137]},
+    "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab" : {43114: config.tokensMap["ETH"][43114]},
+
 }
 
 config.explorerURLMap = {
     80001: "https://mumbai.polygonscan.com/tx/",
     137: "https://polygonscan.com/tx/",
     5: "https://goerli.etherscan.io/tx/",
-    1: "https://etherscan.io/tx/"
+    1: "https://etherscan.io/tx/",
+    43114: "https://testnet.snowtrace.io/tx/"
 }
 
 config.getExplorerURL = (hash, chainId) => {
