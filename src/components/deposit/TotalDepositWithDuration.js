@@ -40,7 +40,8 @@ export default function TotalDepositWithDuration(props) {
             let _totalDeposit = 0;
             for(let index = 0; index < chainIds.length; index++) {
                 let item = chainIds[index];
-                _totalDeposit += await getTotalDepositWithDuration(item, startTime, endTime, version);
+                let currentChainDeposit = await getTotalDepositWithDuration(item, startTime, endTime, version);
+                _totalDeposit = _totalDeposit + currentChainDeposit;
             }
             
             if(_totalDeposit != undefined) {
