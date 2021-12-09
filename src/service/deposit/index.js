@@ -82,28 +82,37 @@ function getTotalDepositWithDuration(chainId, startTime, endTime, version) {
                 return reject("Invalid chainId passed as parameter. Please check the inputs");
             }
 
-            let query = `{
-                fundsDepositeds(first: 1000, where :{timestamp_gte: ${startTime}, timestamp_lte: ${endTime}}) {
-                    id
-                    tokenAddress
-                    amount
-                }
-            }`
-            let data = await executeQuery(chainId, query, version);
-            if(data && data.data && data.data.fundsDepositeds) {
-                let depositData = data.data.fundsDepositeds;
-                if(depositData.length > 0) {
-                    for(let index = 0; index < depositData.length; index++) {
+            let endOfData = false;
+            let skip = 0;
+            while(!endOfData) {
 
-                        let _totalDeposit = depositData[index].amount;
-                        let tokenAddress = depositData[index].tokenAddress;
-                        _totalDeposit = getFormattedValue({rawValue: _totalDeposit, chainId, tokenAddress})
-                        _totalDeposit = getDollarValue(_totalDeposit, tokenAddress);
-                        totalDeposit = totalDeposit + parseFloat(_totalDeposit);
+                let query = `{
+                    fundsDepositeds(first: 1000, skip: ${skip}, where :{timestamp_gte: ${startTime}, timestamp_lte: ${endTime}}) {
+                        id
+                        tokenAddress
+                        amount
+                    }
+                }`
+                let data = await executeQuery(chainId, query, version);
+                skip += 1000;
+                if(data && data.data && data.data.fundsDepositeds) {
+                    let depositData = data.data.fundsDepositeds;
+                    if(depositData.length > 0) {
+                        for(let index = 0; index < depositData.length; index++) {
+    
+                            let _totalDeposit = depositData[index].amount;
+                            let tokenAddress = depositData[index].tokenAddress;
+                            _totalDeposit = getFormattedValue({rawValue: _totalDeposit, chainId, tokenAddress})
+                            _totalDeposit = getDollarValue(_totalDeposit, tokenAddress);
+                            totalDeposit = totalDeposit + parseFloat(_totalDeposit);
+                        }
+                    } else {
+                        console.log(`No Deposit data found on chainId ${chainId}`)
+                        totalDeposit += 0;
+                        endOfData = true;
                     }
                 } else {
-                    console.log(`No Deposit data found on chainId ${chainId}`)
-                    totalDeposit = 0;
+                    endOfData = true;
                 }
             }
             resolve(totalDeposit);
