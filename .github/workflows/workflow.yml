@@ -1,0 +1,48 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Biconomy Hyphen Data Deployment
+
+on:
+  push:
+    branches: [ master, qa ]
+  pull_request:
+    branches: [ master, qa ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.13.1]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Generate build
+        run: |
+          npm install
+          npm run build
+        env:
+          CI: false
+          NODE_OPTIONS: --max_old_space_size=4096
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+      
+      - if: github.ref == 'refs/heads/qa' && github.event_name == 'push'
+        name: Deploy to S3
+        run: |
+          aws s3 sync build s3://${{ secrets.S3_STAGING_BUCKET_NAME }}
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.S3_STAGING_CF_ID }} --paths /
+      
+      - if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+        name: Deploy to S3
+        run: |
+          aws s3 sync build s3://${{ secrets.S3_BUCKET_NAME }}
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.S3_CF_ID }} --paths /
