@@ -20,11 +20,11 @@ const useStyles = makeStyles({
     },
     cumulativeDataRow: {
         display: "grid",
-        gridTemplateColumns: "repeat(4, minmax(280px, 1fr))",
+        gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
     },
     chainDataRow: {
         display: "grid",
-        gridTemplateColumns: "repeat(3, minmax(280px, 1fr))",
+        gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
     },
     graphContainer: {
         padding: "15px",
