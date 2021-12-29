@@ -14,7 +14,7 @@ import { Container } from "@material-ui/core";
 
 let { config } = require("../../config");
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     totalDepositContainer: {
         padding: "10px",
     },
@@ -31,9 +31,14 @@ const useStyles = makeStyles({
     },
     graphComponentRow: {
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(680px, 1fr))",
+        [theme.breakpoints.between("sm", "md")]: {
+            gridTemplateColumns: "repeat(auto-fit, 1fr)",
+        },
+        "@media (min-width: 1280px)": {
+            gridTemplateColumns: "repeat(auto-fit, minmax(680px, 1fr))",
+        },
     },
-});
+}));
 
 export default function Home(props) {
     const classes = useStyles();

@@ -11,8 +11,7 @@ let { config } = require("./config");
 
 const useStyles = makeStyles({
   root: {
-      padding: "71px 0px 0px 0px",
-      margin: "0px",      
+      margin: "0px",
       fontFamily: 'Roboto Mono!important',
   }
 });
