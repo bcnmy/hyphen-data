@@ -30,9 +30,8 @@ const useStyles = makeStyles({
         padding: "15px",
     },
     graphComponentRow: {
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-evenly",
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(680px, 1fr))",
     },
 });
 

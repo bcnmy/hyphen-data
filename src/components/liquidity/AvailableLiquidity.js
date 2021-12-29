@@ -22,10 +22,8 @@ import {
 
 const useStyles = makeStyles({
     root: {
-        flexGrow: 1,
         padding: "5px",
         margin: "12px",
-        width: "680px",
         height: "310px!important",
         border: "2px solid #615CCD",
         borderRadius: "5px",
