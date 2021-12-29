@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
-import clsx from  'clsx';
-import { config } from '../../config';
-import { useSelector, useDispatch } from 'react-redux';
-import { getBalance, getLiquidityAdded } from '../../service/token';
+import { useEffect, useState } from "react";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
+import clsx from "clsx";
+import { config } from "../../config";
+import { useSelector, useDispatch } from "react-redux";
+import { getBalance, getLiquidityAdded } from "../../service/token";
 import {
     Chart,
     BarSeries,
@@ -11,28 +11,31 @@ import {
     ValueAxis,
     Legend,
     Title,
-    Tooltip
-  } from '@devexpress/dx-react-chart-material-ui';
-import { Animation, EventTracker, HoverState, Stack } from '@devexpress/dx-react-chart';
+    Tooltip,
+} from "@devexpress/dx-react-chart-material-ui";
+import {
+    Animation,
+    EventTracker,
+    HoverState,
+    Stack,
+} from "@devexpress/dx-react-chart";
 
 const useStyles = makeStyles({
     root: {
         padding: "5px",
-        margin: "30px 5px",
-        width: "680px",
+        margin: "12px",
         height: "310px!important",
         border: "2px solid #615CCD",
-        borderRadius: "5px"
-    }
+        borderRadius: "5px",
+    },
 });
-
 
 const styles = {
     titleText: {
-        textAlign: 'left',
+        textAlign: "left",
         padding: "0px 5px 10px 5px",
-        fontSize: "20px"
-    }
+        fontSize: "20px",
+    },
 };
 
 const TextComponent = withStyles(styles)(({ classes, ...restProps }) => (
@@ -45,12 +48,12 @@ export default function AvailableLiquidity(props) {
     const [error, setError] = useState();
     const [liquidityData, setLiquidityData] = useState([]);
 
-    const version = useSelector(state => state.root.version);
+    const version = useSelector((state) => state.root.version);
 
-    useEffect(()=>{
+    useEffect(() => {
         setLiquidityData([]);
         let chainId = props.chainId;
-        if(chainId) {
+        if (chainId) {
             fetchAvailableLiquidity(chainId);
         } else {
             setError("No chainId passed to component");
@@ -61,32 +64,47 @@ export default function AvailableLiquidity(props) {
         try {
             let supportedTokens = props.supportedTokenSymbols;
             let _liquidityData = [];
-            for(let index = 0; index < supportedTokens.length; index++) {
+            for (let index = 0; index < supportedTokens.length; index++) {
                 let tokenSymbol = supportedTokens[index];
                 let tokenInfo = config.tokensMap[tokenSymbol][chainId];
-                if(tokenInfo) {
+                if (tokenInfo) {
                     let tokenAddress = tokenInfo.address;
-                    let lpManagerAddress = config.chainIdMap[chainId].LPManagerAddress[version];
-                    let tokenBalance = await getBalance(tokenAddress, chainId, lpManagerAddress);
-                    let liquidityAdded = await getLiquidityAdded(tokenAddress, chainId, lpManagerAddress);
-                    if(tokenBalance != undefined) {
+                    let lpManagerAddress =
+                        config.chainIdMap[chainId].LPManagerAddress[version];
+                    let tokenBalance = await getBalance(
+                        tokenAddress,
+                        chainId,
+                        lpManagerAddress
+                    );
+                    let liquidityAdded = await getLiquidityAdded(
+                        tokenAddress,
+                        chainId,
+                        lpManagerAddress
+                    );
+                    if (tokenBalance != undefined) {
                         tokenBalance = parseFloat(tokenBalance);
-                        _liquidityData.push({tokenSymbol, liquidity: tokenBalance, totalLiquidity: parseFloat(liquidityAdded)});
-                        setLiquidityData([..._liquidityData, {tokenSymbol, liquidity: tokenBalance}]);
+                        _liquidityData.push({
+                            tokenSymbol,
+                            liquidity: tokenBalance,
+                            totalLiquidity: parseFloat(liquidityAdded),
+                        });
+                        setLiquidityData([
+                            ..._liquidityData,
+                            { tokenSymbol, liquidity: tokenBalance },
+                        ]);
                     }
                 } else {
                     console.info(`Token ${tokenSymbol} is not supported`);
                 }
             }
-        } catch(error) {
+        } catch (error) {
             console.log(error);
         }
-    }
+    };
     return (
         <div className={classes.root}>
-            {liquidityData && liquidityData.length > 0 &&
-                <Chart data={liquidityData} height="300" >
-
+            {liquidityData && liquidityData.length > 0 && (
+                <Chart data={liquidityData} height="300">
                     <ValueAxis />
                     <ArgumentAxis />
 
@@ -101,21 +119,24 @@ export default function AvailableLiquidity(props) {
                         argumentField="tokenSymbol"
                         name="Total"
                     />
-                    <Legend 
-                        verticalAlignment="bottom"
-                        />
+                    <Legend verticalAlignment="bottom" />
 
-                    <Stack />       
+                    <Stack />
                     <Animation />
-                    <Title text={`Available Liquidity (${config.chainIdMap[props.chainId].name})`} textComponent={TextComponent}/>
+                    <Title
+                        text={`Available Liquidity (${
+                            config.chainIdMap[props.chainId].name
+                        })`}
+                        textComponent={TextComponent}
+                    />
                     <EventTracker />
                     <HoverState />
                     <Tooltip />
                 </Chart>
-            }
-            {(!liquidityData || liquidityData.length==0) &&
+            )}
+            {(!liquidityData || liquidityData.length == 0) && (
                 <div> {error} </div>
-            }
+            )}
         </div>
-    )
+    );
 }
