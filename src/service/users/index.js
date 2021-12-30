@@ -10,15 +10,16 @@ function getUniqueUserCountByChain(chainId, version) {
                 );
             }
             const query = `{
-                uniqueWalletCounts{
-                  id,
-                  count
+                uniqueWalletCounts (where: { id: 1 }) {
+                    id,
+                    count
                 }
             }`;
             const {
                 data: { uniqueWalletCounts },
             } = await executeQuery(chainId, query, version);
-            const { count: totalCount } = uniqueWalletCounts[uniqueWalletCounts.length - 1] || 0;
+            const { count: totalCount } =
+                uniqueWalletCounts[uniqueWalletCounts.length - 1] || 0;
             resolve(totalCount);
         } catch (error) {
             reject(error);
