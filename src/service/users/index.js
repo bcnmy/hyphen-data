@@ -18,8 +18,7 @@ function getUniqueUserCountByChain(chainId, version) {
             const {
                 data: { uniqueWalletCounts },
             } = await executeQuery(chainId, query, version);
-            const { count: totalCount } =
-                uniqueWalletCounts[uniqueWalletCounts.length - 1] || 0;
+            const { count: totalCount } = uniqueWalletCounts[0];
             resolve(totalCount);
         } catch (error) {
             reject(error);
