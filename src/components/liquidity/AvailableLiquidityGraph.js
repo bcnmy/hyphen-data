@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
 import { config } from "../../config";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { getBalance, getLiquidityAdded } from "../../service/token";
 import {
     Chart,
@@ -19,6 +18,7 @@ import {
     HoverState,
     Stack,
 } from "@devexpress/dx-react-chart";
+import NumericGraphLabel from "../basic/NumericGraphLabel";
 
 const useStyles = makeStyles({
     root: {
@@ -42,7 +42,7 @@ const TextComponent = withStyles(styles)(({ classes, ...restProps }) => (
     <Title.Text {...restProps} className={classes.titleText} />
 ));
 
-export default function AvailableLiquidity(props) {
+export default function AvailableLiquidityGraph(props) {
     const classes = useStyles();
 
     const [error, setError] = useState();
@@ -105,8 +105,8 @@ export default function AvailableLiquidity(props) {
         <div className={classes.root}>
             {liquidityData && liquidityData.length > 0 && (
                 <Chart data={liquidityData} height="300">
-                    <ValueAxis />
                     <ArgumentAxis />
+                    <ValueAxis labelComponent={NumericGraphLabel} />
 
                     <BarSeries
                         valueField="liquidity"
