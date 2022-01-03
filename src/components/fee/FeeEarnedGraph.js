@@ -18,6 +18,7 @@ import {
 import { Stack } from "@devexpress/dx-react-chart";
 import { getDailyFee } from "../../service/fee";
 import { config } from "../../config";
+import NumericGraphLabel from "../basic/NumericGraphLabel";
 
 const useStyles = makeStyles({
     root: {
@@ -40,15 +41,6 @@ const styles = {
 const TextComponent = withStyles(styles)(({ classes, ...restProps }) => (
     <Title.Text {...restProps} className={classes.titleText} />
 ));
-
-function FeeLabel({ text, ...restProps }) {
-    const formattedText = new Intl.NumberFormat("en-US", {
-        notation: "compact",
-        compactDisplay: "short",
-    }).format(text.replace(/,/g, ''))
-
-    return <ValueAxis.Label {...restProps} text={formattedText} />;
-}
 
 const noOfSecondsInDay = 86400;
 export default function FeeEarnedGraph(props) {
@@ -132,7 +124,7 @@ export default function FeeEarnedGraph(props) {
             {dailyFee && chainNameArray && dailyFee.length > 0 && (
                 <Chart data={dailyFee} height="300">
                     <ArgumentAxis />
-                    <ValueAxis labelComponent={FeeLabel} />
+                    <ValueAxis labelComponent={NumericGraphLabel} />
 
                     {props.chainIds &&
                         props.chainIds.map((item, index) => (

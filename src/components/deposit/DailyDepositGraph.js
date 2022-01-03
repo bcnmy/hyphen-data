@@ -18,6 +18,7 @@ import {
 } from "@devexpress/dx-react-chart";
 import { getDailyDepositsUSD } from "../../service/deposit";
 import { config } from "../../config";
+import NumericGraphLabel from "../basic/NumericGraphLabel";
 
 const useStyles = makeStyles({
     root: {
@@ -42,15 +43,6 @@ const TextComponent = withStyles(styles)(({ classes, ...restProps }) => (
 ));
 
 const noOfSecondsInDay = 86400;
-
-function USDLabel({ text, ...restProps }) {
-    const formattedText = new Intl.NumberFormat("en-US", {
-        notation: "compact",
-        compactDisplay: "short",
-    }).format(text.replace(/,/g, ''))
-
-    return <ValueAxis.Label {...restProps} text={formattedText} />;
-}
 
 export default function DailyDepositGraph(props) {
     const classes = useStyles();
@@ -125,7 +117,7 @@ export default function DailyDepositGraph(props) {
             {dailyDeposits && chainNameArray && dailyDeposits.length > 0 && (
                 <Chart data={dailyDeposits} height="300">
                     <ArgumentAxis />
-                    <ValueAxis labelComponent={USDLabel} />
+                    <ValueAxis labelComponent={NumericGraphLabel} />
 
                     {props.chainIds &&
                         props.chainIds.map((item, index) => (
