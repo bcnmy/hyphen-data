@@ -42,7 +42,16 @@ const TextComponent = withStyles(styles)(({ classes, ...restProps }) => (
     <Title.Text {...restProps} className={classes.titleText} />
 ));
 
-export default function AvailableLiquidity(props) {
+function LiquidityLabel({ text, ...restProps }) {
+    const formattedText = new Intl.NumberFormat("en-US", {
+        notation: "compact",
+        compactDisplay: "short",
+    }).format(text.replace(/,/g, ''))
+
+    return <ValueAxis.Label {...restProps} text={formattedText} />;
+}
+
+export default function AvailableLiquidityGraph(props) {
     const classes = useStyles();
 
     const [error, setError] = useState();
@@ -105,8 +114,8 @@ export default function AvailableLiquidity(props) {
         <div className={classes.root}>
             {liquidityData && liquidityData.length > 0 && (
                 <Chart data={liquidityData} height="300">
-                    <ValueAxis />
                     <ArgumentAxis />
+                    <ValueAxis labelComponent={LiquidityLabel} />
 
                     <BarSeries
                         valueField="liquidity"

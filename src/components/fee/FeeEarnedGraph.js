@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { scaleBand } from "@devexpress/dx-chart-core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import {
     Chart,
     BarSeries,
@@ -11,14 +10,12 @@ import {
     Title,
     Tooltip,
 } from "@devexpress/dx-react-chart-material-ui";
-import { scaleTime } from "d3-scale";
 import {
-    ArgumentScale,
     Animation,
     EventTracker,
     HoverState,
 } from "@devexpress/dx-react-chart";
-import { ValueScale, Stack } from "@devexpress/dx-react-chart";
+import { Stack } from "@devexpress/dx-react-chart";
 import { getDailyFee } from "../../service/fee";
 import { config } from "../../config";
 
@@ -43,6 +40,15 @@ const styles = {
 const TextComponent = withStyles(styles)(({ classes, ...restProps }) => (
     <Title.Text {...restProps} className={classes.titleText} />
 ));
+
+function FeeLabel({ text, ...restProps }) {
+    const formattedText = new Intl.NumberFormat("en-US", {
+        notation: "compact",
+        compactDisplay: "short",
+    }).format(text.replace(/,/g, ''))
+
+    return <ValueAxis.Label {...restProps} text={formattedText} />;
+}
 
 const noOfSecondsInDay = 86400;
 export default function FeeEarnedGraph(props) {
@@ -125,8 +131,8 @@ export default function FeeEarnedGraph(props) {
         <div className={classes.root}>
             {dailyFee && chainNameArray && dailyFee.length > 0 && (
                 <Chart data={dailyFee} height="300">
-                    <ValueAxis />
                     <ArgumentAxis />
+                    <ValueAxis labelComponent={FeeLabel} />
 
                     {props.chainIds &&
                         props.chainIds.map((item, index) => (

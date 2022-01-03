@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { scaleBand } from "@devexpress/dx-chart-core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import {
     Chart,
     BarSeries,
@@ -11,14 +10,12 @@ import {
     Title,
     Tooltip,
 } from "@devexpress/dx-react-chart-material-ui";
-import { scaleTime } from "d3-scale";
 import {
-    ArgumentScale,
     Animation,
     EventTracker,
     HoverState,
+    Stack,
 } from "@devexpress/dx-react-chart";
-import { ValueScale, Stack } from "@devexpress/dx-react-chart";
 import { getDailyDepositsUSD } from "../../service/deposit";
 import { config } from "../../config";
 
@@ -45,6 +42,16 @@ const TextComponent = withStyles(styles)(({ classes, ...restProps }) => (
 ));
 
 const noOfSecondsInDay = 86400;
+
+function USDLabel({ text, ...restProps }) {
+    const formattedText = new Intl.NumberFormat("en-US", {
+        notation: "compact",
+        compactDisplay: "short",
+    }).format(text.replace(/,/g, ''))
+
+    return <ValueAxis.Label {...restProps} text={formattedText} />;
+}
+
 export default function DailyDepositGraph(props) {
     const classes = useStyles();
     const [dailyDeposits, setDailyDeposits] = useState([]);
@@ -117,8 +124,8 @@ export default function DailyDepositGraph(props) {
         <div className={classes.root}>
             {dailyDeposits && chainNameArray && dailyDeposits.length > 0 && (
                 <Chart data={dailyDeposits} height="300">
-                    <ValueAxis />
                     <ArgumentAxis />
+                    <ValueAxis labelComponent={USDLabel} />
 
                     {props.chainIds &&
                         props.chainIds.map((item, index) => (

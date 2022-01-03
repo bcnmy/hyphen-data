@@ -9,7 +9,7 @@ import TotalDepositWithDuration from "../deposit/TotalDepositWithDuration";
 import DailyDepositGraph from "../deposit/DailyDepositGraph";
 import FeeEarnedGraph from "../fee/FeeEarnedGraph";
 import AverageTransferTime from "../transfer/AverageTransferTime";
-import AvailableLiquidity from "../liquidity/AvailableLiquidity";
+import AvailableLiquidityGraph from "../liquidity/AvailableLiquidityGraph";
 import { Container } from "@material-ui/core";
 
 let { config } = require("../../config");
@@ -125,7 +125,7 @@ export default function Home(props) {
                     {config.supportedChainArrray &&
                         config.supportedChainArrray.length > 0 &&
                         config.supportedChainArrray.map((item, index) => (
-                            <AvailableLiquidity
+                            <AvailableLiquidityGraph
                                 chainId={item.chainId}
                                 supportedTokenSymbols={["USDT", "USDC"]}
                                 key={`AL_${index}`}
@@ -136,7 +136,7 @@ export default function Home(props) {
                     {config.supportedChainArrray &&
                         config.supportedChainArrray.length > 0 &&
                         config.supportedChainArrray.map((item, index) => (
-                            <AvailableLiquidity
+                            <AvailableLiquidityGraph
                                 chainId={item.chainId}
                                 supportedTokenSymbols={["ETH"]}
                                 key={`AL_${index}`}
