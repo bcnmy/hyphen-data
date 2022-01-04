@@ -19,6 +19,7 @@ import { Stack } from "@devexpress/dx-react-chart";
 import { getDailyFee } from "../../service/fee";
 import { config } from "../../config";
 import NumericGraphLabel from "../basic/NumericGraphLabel";
+import { getStartAndEndTime } from "../../utils/getStartAndEndTime";
 
 const useStyles = makeStyles({
     root: {
@@ -42,103 +43,78 @@ const TextComponent = withStyles(styles)(({ classes, ...restProps }) => (
     <Title.Text {...restProps} className={classes.titleText} />
 ));
 
-const noOfSecondsInDay = 86400;
-export default function FeeEarnedGraph(props) {
+export default function FeeEarnedGraph({ chainIds, days = 30 }) {
     const classes = useStyles();
     const [dailyFee, setDailyFee] = useState([]);
-    const [chainNameArray, setChainNameArray] = useState();
+    const [chainNames, setChainNames] = useState();
 
     const version = useSelector((state) => state.root.version);
 
     useEffect(() => {
-        const now = Date.now();
-        let chainIds = props.chainIds;
-        let numOfDays = props.days || 30;
+        async function fetchDailyFee(chainIds, startTime, endTime) {
+            try {
+                const dailyFeesMap = {};
+                for (let chainId of chainIds) {
+                    dailyFeesMap[chainId] = await getDailyFee(
+                        chainId,
+                        startTime,
+                        endTime,
+                        version
+                    );
+                }
+                const dates = Object.keys(dailyFeesMap[chainIds[0]]);
+                const dailyFeesArray = dates.reduce((acc, date) => {
+                    const dateObject = new Date(date * 1000);
+                    return [
+                        ...acc,
+                        {
+                            date: `${dateObject.getDate()}/${
+                                dateObject.getMonth() + 1
+                            }`,
+                            ...chainIds.reduce((acc, chainId) => {
+                                acc[`amount${chainId}`] =
+                                    dailyFeesMap[chainId][date];
+                                return acc;
+                            }, {}),
+                        },
+                    ];
+                }, []);
+                setDailyFee(dailyFeesArray);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
         if (chainIds) {
-            const curTimeInSec = parseInt(now / 1000);
-            let startTime = curTimeInSec - noOfSecondsInDay * numOfDays;
-            let endTime = curTimeInSec;
-            let _chainNameArray = [];
-            for (let index = 0; index < chainIds.length; index++) {
-                let item = chainIds[index];
-                _chainNameArray.push(config.chainIdMap[item].name);
-            }
-            setChainNameArray(_chainNameArray);
-            fetchDailyFee(props.chainIds, startTime, endTime);
+            const { startTime, endTime } = getStartAndEndTime(days);
+            const chainNames = chainIds.map((chainId) => {
+                return config.chainIdMap[chainId].name;
+            });
+            setChainNames(chainNames);
+            fetchDailyFee(chainIds, startTime, endTime);
         }
-    }, [version]);
-
-    let fetchDailyFee = async (chainIds, startTime, endTime) => {
-        try {
-            let dailyDepositMap = {};
-            for (let index = 0; index < chainIds.length; index++) {
-                let item = chainIds[index];
-                dailyDepositMap[item] = await getDailyFee(
-                    item,
-                    startTime,
-                    endTime,
-                    version
-                );
-            }
-
-            let dailyDepositArray = [];
-            let longestMap = new Map();
-            for (let index = 0; index < chainIds.length; index++) {
-                let item = chainIds[index];
-                if (longestMap.size < dailyDepositMap[item].size) {
-                    longestMap = dailyDepositMap[item];
-                }
-            }
-
-            let it = longestMap.keys();
-            if (it) {
-                let result = it.next();
-                while (!result.done) {
-                    let key = result.value;
-                    let date = new Date(key * 1000);
-                    let obj = {};
-                    obj["date"] = `${date.getDate()}/${date.getMonth() + 1}`;
-                    for (let index = 0; index < chainIds.length; index++) {
-                        let item = chainIds[index];
-                        let value = dailyDepositMap[item].get(key);
-
-                        if (value != undefined) {
-                            obj[`amount${item}`] = value;
-                        } else {
-                            obj[`amount${item}`] = 0;
-                        }
-                    }
-                    dailyDepositArray.push(obj);
-
-                    result = it.next();
-                }
-            }
-            setDailyFee(dailyDepositArray.reverse());
-        } catch (error) {
-            console.error(error);
-        }
-    };
+    }, [chainIds, days, version]);
 
     return (
         <div className={classes.root}>
-            {dailyFee && chainNameArray && dailyFee.length > 0 && (
+            {dailyFee && chainNames && dailyFee.length > 0 && (
                 <Chart data={dailyFee} height="300">
                     <ArgumentAxis />
                     <ValueAxis labelComponent={NumericGraphLabel} />
 
-                    {props.chainIds &&
-                        props.chainIds.map((item, index) => (
+                    {chainIds &&
+                        chainIds.map((chainId, index) => (
                             <BarSeries
-                                valueField={`amount${item}`}
+                                valueField={`amount${chainId}`}
                                 argumentField="date"
-                                name={config.chainIdMap[item].name}
+                                name={config.chainIdMap[chainId].name}
                                 key={`BarGraph_${index}`}
                                 barWidth="0.2"
-                                color={config.chainIdMap[item].color}
+                                color={config.chainIdMap[chainId].color}
                             />
                         ))}
 
-                    <Stack stacks={[{ series: chainNameArray }]} />
+                    <Stack stacks={[{ series: chainNames }]} />
                     <Animation />
                     <Legend verticalAlignment="bottom" />
 

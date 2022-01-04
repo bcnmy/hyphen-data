@@ -19,6 +19,7 @@ import {
 import { getDailyDepositsUSD } from "../../service/deposit";
 import { config } from "../../config";
 import NumericGraphLabel from "../basic/NumericGraphLabel";
+import { getStartAndEndTime } from "../../utils/getStartAndEndTime";
 
 const useStyles = makeStyles({
     root: {
@@ -42,96 +43,78 @@ const TextComponent = withStyles(styles)(({ classes, ...restProps }) => (
     <Title.Text {...restProps} className={classes.titleText} />
 ));
 
-const noOfSecondsInDay = 86400;
-
-export default function DailyDepositGraph(props) {
+export default function DailyDepositGraph({ chainIds, days = 30 }) {
     const classes = useStyles();
     const [dailyDeposits, setDailyDeposits] = useState([]);
-    const [chainNameArray, setChainNameArray] = useState();
+    const [chainNames, setChainNames] = useState();
 
     const version = useSelector((state) => state.root.version);
 
     useEffect(() => {
-        const now = Date.now();
-        let chainIds = props.chainIds;
-        let numOfDays = props.days || 30;
+        async function fetchDailyDepositUSD(chainIds, startTime, endTime) {
+            try {
+                const dailyDepositsMap = {};
+                for (let chainId of chainIds) {
+                    dailyDepositsMap[chainId] = await getDailyDepositsUSD(
+                        chainId,
+                        startTime,
+                        endTime,
+                        version
+                    );
+                }
+                const dates = Object.keys(dailyDepositsMap[chainIds[0]]);
+                const dailyDepositArray = dates.reduce((acc, date) => {
+                    const dateObject = new Date(date * 1000);
+                    return [
+                        ...acc,
+                        {
+                            date: `${dateObject.getDate()}/${
+                                dateObject.getMonth() + 1
+                            }`,
+                            ...chainIds.reduce((acc, chainId) => {
+                                acc[`amount${chainId}`] =
+                                    dailyDepositsMap[chainId][date];
+                                return acc;
+                            }, {}),
+                        },
+                    ];
+                }, []);
+                setDailyDeposits(dailyDepositArray);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
         if (chainIds) {
-            const curTimeInSec = parseInt(now / 1000);
-            let startTime = curTimeInSec - noOfSecondsInDay * numOfDays;
-            let endTime = curTimeInSec;
-            let _chainNameArray = [];
-            for (let index = 0; index < chainIds.length; index++) {
-                let item = chainIds[index];
-                _chainNameArray.push(config.chainIdMap[item].name);
-            }
-            setChainNameArray(_chainNameArray);
-            fetchDailyDepositUSD(props.chainIds, startTime, endTime);
+            const { startTime, endTime } = getStartAndEndTime(days);
+            const chainNames = chainIds.map((chainId) => {
+                return config.chainIdMap[chainId].name;
+            });
+            setChainNames(chainNames);
+            fetchDailyDepositUSD(chainIds, startTime, endTime);
         }
-    }, [version]);
-
-    let fetchDailyDepositUSD = async (chainIds, startTime, endTime) => {
-        try {
-            let dailyDepositMap = {};
-            for (let index = 0; index < chainIds.length; index++) {
-                let item = chainIds[index];
-                dailyDepositMap[item] = await getDailyDepositsUSD(
-                    item,
-                    startTime,
-                    endTime,
-                    version
-                );
-            }
-            let dailyDepositArray = [];
-
-            let dateArray = [];
-            for (let index = 0; index < chainIds.length; index++) {
-                let item = chainIds[index];
-                if (
-                    dateArray.length < Object.keys(dailyDepositMap[item]).length
-                ) {
-                    dateArray = Object.keys(dailyDepositMap[item]);
-                }
-            }
-
-            for (let index = 0; index < dateArray.length; index++) {
-                let key = dateArray[index];
-                let date = new Date(key * 1000);
-
-                let obj = {};
-                obj["date"] = `${date.getDate()}/${date.getMonth() + 1}`;
-                for (let index = 0; index < chainIds.length; index++) {
-                    let item = chainIds[index];
-                    obj[`amount${item}`] = dailyDepositMap[item][key];
-                }
-
-                dailyDepositArray.push(obj);
-            }
-            setDailyDeposits(dailyDepositArray);
-        } catch (error) {
-            console.error(error);
-        }
-    };
+    }, [chainIds, days, version]);
 
     return (
         <div className={classes.root}>
-            {dailyDeposits && chainNameArray && dailyDeposits.length > 0 && (
+            {dailyDeposits && chainNames && dailyDeposits.length > 0 && (
                 <Chart data={dailyDeposits} height="300">
                     <ArgumentAxis />
                     <ValueAxis labelComponent={NumericGraphLabel} />
 
-                    {props.chainIds &&
-                        props.chainIds.map((item, index) => (
+                    {chainIds &&
+                        chainIds.map((chainId, index) => (
                             <BarSeries
-                                valueField={`amount${item}`}
+                                valueField={`amount${chainId}`}
                                 argumentField="date"
-                                name={config.chainIdMap[item].name}
+                                name={config.chainIdMap[chainId].name}
                                 key={`BarGraph_${index}`}
                                 barWidth="0.2"
-                                color={config.chainIdMap[item].color}
+                                color={config.chainIdMap[chainId].color}
                             />
                         ))}
 
-                    <Stack stacks={[{ series: chainNameArray }]} />
+                    <Stack stacks={[{ series: chainNames }]} />
                     <Animation />
                     <Legend verticalAlignment="bottom" />
 

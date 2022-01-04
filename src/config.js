@@ -36,7 +36,7 @@ let ethereumColor = "#868EAC";
 let polygonColor = "#8247E5";
 let avalancheColor = "#E94646";
 
-let MUMBAI = { 
+let MUMBAI = {
     name: "Mumbai",
     subText: "Polygon testnet",
     chainId: 80001,
@@ -54,7 +54,7 @@ let MUMBAI = {
         v2: "0x65d8bf5a792ad32ee884f77301e8d6b11fbb21b3"
     }
 }
-let ETHEREUM = { 
+let ETHEREUM = {
     name: "Ethereum",
     subText: "Ethereum Mainnet",
     chainId: 1,
@@ -72,7 +72,7 @@ let ETHEREUM = {
         v2: "0xf78765bd14b4e8527d9e4e5c5a5c11a44ad12f47"
     }
 }
-let MATIC = { 
+let MATIC = {
     name: "Polygon",
     subText: "Polygon Mainnet",
     chainId: 137,
@@ -90,7 +90,7 @@ let MATIC = {
         v2: "0xf78765bd14b4e8527d9e4e5c5a5c11a44ad12f47"
     }
 }
-let GOERLI = { 
+let GOERLI = {
     name: "Goerli",
     subText: "Ethereum testnet",
     chainId: 5,
@@ -109,7 +109,7 @@ let GOERLI = {
     }
 }
 
-let AVA = { 
+let AVA = {
     name: "Avalanche",
     subText: "Avalanche mainnet",
     chainId: 43114,
@@ -140,13 +140,13 @@ if(process.env.REACT_APP_ENV === TEST_ENVIRONMENT) {
 config.chains = chains;
 config.chainIdMap = {};
 
-let supportedChainArrray = Object.values(chains);
-config.supportedChainArrray = supportedChainArrray;
+let supportedChainsArray = Object.values(chains);
+config.supportedChainsArray = supportedChainsArray;
 
 config.supportedTokenSymbols = ["USDC","USDT","ETH"];
 
-for(let index = 0; index < supportedChainArrray.length; index++) {
-    let currentChain = supportedChainArrray[index];
+for(let index = 0; index < supportedChainsArray.length; index++) {
+    let currentChain = supportedChainsArray[index];
     config.chainIdMap[currentChain.chainId] = currentChain;
 }
 
