@@ -6,22 +6,20 @@ import DailyDepositGraph from "../deposit/DailyDepositGraph";
 import FeeEarnedGraph from "../fee/FeeEarnedGraph";
 import AverageTransferTime from "../transfer/AverageTransferTime";
 import AvailableLiquidityGraph from "../liquidity/AvailableLiquidityGraph";
-import { Container } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 
 let { config } = require("../../config");
 
 const useStyles = makeStyles((theme) => ({
     cumulativeDataRow: {
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+        marginBottom: "4px",
     },
     chainDataRow: {
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+        marginBottom: "8px",
     },
     graphComponentRow: {
         display: "grid",
-        [theme.breakpoints.between("sm", "md")]: {
+        [theme.breakpoints.between("xs", "md")]: {
             gridTemplateColumns: "repeat(auto-fit, 1fr)",
         },
         "@media (min-width: 1280px)": {
@@ -45,8 +43,8 @@ export default function Home(props) {
 
     return (
         <>
-            <>
-                <div className={classes.cumulativeDataRow}>
+            <Grid container spacing={1} className={classes.cumulativeDataRow}>
+                <Grid item xs={12} md={4}>
                     <TotalDepositWithDuration
                         chainIds={supportedChainIds}
                         days={1}
@@ -55,75 +53,86 @@ export default function Home(props) {
                         lightBackground={true}
                         style={durationStyle}
                     />
+                </Grid>
+                <Grid item xs={12} md={4}>
                     <CumulativeDeposit
                         title="Total Volume"
                         chainIds={supportedChainIds}
                         style={durationStyle}
                     />
+                </Grid>
+                <Grid item xs={12} md={4}>
                     <UniqueWalletCount
                         title="Unique User Count"
                         chainIds={supportedChainIds}
                         style={durationStyle}
                     />
+                </Grid>
+                <Grid item xs={12} md={12}>
                     <AverageTransferTime
                         style={durationStyle}
                         fromChainId={supportedChainIds[0]}
                         toChainId={supportedChainIds[2]}
                     />
-                </div>
+                </Grid>
+            </Grid>
 
+            {config.supportedChainsArray &&
+            config.supportedChainsArray.length > 0 ? (
+                <Grid container spacing={1} className={classes.chainDataRow}>
+                    {config.supportedChainsArray.map((item, index) => (
+                        <>
+                            <Grid item xs={12} md={4}>
+                                <TotalDepositWithDuration
+                                    chainIds={[item.chainId]}
+                                    days={1}
+                                    title="24 hr Volume"
+                                    showComparision={true}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <CumulativeDeposit
+                                    title="Total Volume"
+                                    chainIds={[item.chainId]}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <UniqueWalletCount
+                                    title="Unique User Count"
+                                    chainIds={[item.chainId]}
+                                />
+                            </Grid>
+                        </>
+                    ))}
+                </Grid>
+            ) : null}
+
+            <div className={classes.graphComponentRow}>
+                <DailyDepositGraph chainIds={supportedChainIds} days={15} />
+                <FeeEarnedGraph chainIds={supportedChainIds} days={15} />
+            </div>
+            <div className={classes.graphComponentRow}>
                 {config.supportedChainsArray &&
                     config.supportedChainsArray.length > 0 &&
                     config.supportedChainsArray.map((item, index) => (
-                        <div
-                            className={classes.chainDataRow}
-                            key={`NetworkRow_${index}`}
-                        >
-                            <TotalDepositWithDuration
-                                chainIds={[item.chainId]}
-                                days={1}
-                                title="24 hr Volume"
-                                showComparision={true}
-                            />
-                            <CumulativeDeposit
-                                title="Total Volume"
-                                chainIds={[item.chainId]}
-                            />
-                            <UniqueWalletCount
-                                title="Unique User Count"
-                                chainIds={[item.chainId]}
-                            />
-                        </div>
+                        <AvailableLiquidityGraph
+                            chainId={item.chainId}
+                            supportedTokenSymbols={["USDT", "USDC"]}
+                            key={`AL_${index}`}
+                        />
                     ))}
-            </>
-            <>
-                <div className={classes.graphComponentRow}>
-                    <DailyDepositGraph chainIds={supportedChainIds} days={15} />
-                    <FeeEarnedGraph chainIds={supportedChainIds} days={15} />
-                </div>
-                <div className={classes.graphComponentRow}>
-                    {config.supportedChainsArray &&
-                        config.supportedChainsArray.length > 0 &&
-                        config.supportedChainsArray.map((item, index) => (
-                            <AvailableLiquidityGraph
-                                chainId={item.chainId}
-                                supportedTokenSymbols={["USDT", "USDC"]}
-                                key={`AL_${index}`}
-                            />
-                        ))}
-                </div>
-                <div className={classes.graphComponentRow}>
-                    {config.supportedChainsArray &&
-                        config.supportedChainsArray.length > 0 &&
-                        config.supportedChainsArray.map((item, index) => (
-                            <AvailableLiquidityGraph
-                                chainId={item.chainId}
-                                supportedTokenSymbols={["ETH"]}
-                                key={`AL_${index}`}
-                            />
-                        ))}
-                </div>
-            </>
+            </div>
+            <div className={classes.graphComponentRow}>
+                {config.supportedChainsArray &&
+                    config.supportedChainsArray.length > 0 &&
+                    config.supportedChainsArray.map((item, index) => (
+                        <AvailableLiquidityGraph
+                            chainId={item.chainId}
+                            supportedTokenSymbols={["ETH"]}
+                            key={`AL_${index}`}
+                        />
+                    ))}
+            </div>
         </>
     );
 }

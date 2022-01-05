@@ -6,12 +6,12 @@ import Home from "./components/page/Home";
 import TransferDetails from "./components/page/TransferDetails";
 import { useSelector, useDispatch } from "react-redux";
 import { updateSearchState } from "./redux";
+import { Container } from "@material-ui/core";
 let { config } = require("./config");
 
 const useStyles = makeStyles({
     root: {
-        margin: "0px",
-        fontFamily: "Roboto Mono!important",
+        fontFamily: "Roboto Mono",
     },
 });
 
@@ -50,10 +50,10 @@ function App() {
     }, [currentPage]);
 
     return (
-        <div className={classes.root}>
+        <Container maxWidth="lg" className={classes.root}>
             <Header />
             {currentComponent}
-        </div>
+        </Container>
     );
 }
 
