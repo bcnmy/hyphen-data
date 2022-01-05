@@ -42,7 +42,10 @@ const TextComponent = withStyles(styles)(({ classes, ...restProps }) => (
     <Title.Text {...restProps} className={classes.titleText} />
 ));
 
-export default function AvailableLiquidityGraph(props) {
+export default function AvailableLiquidityGraph({
+    chainId,
+    supportedTokenSymbols,
+}) {
     const classes = useStyles();
 
     const [error, setError] = useState();
@@ -51,56 +54,57 @@ export default function AvailableLiquidityGraph(props) {
     const version = useSelector((state) => state.root.version);
 
     useEffect(() => {
+        async function fetchAvailableLiquidity(chainId) {
+            try {
+                const liquidityData = [];
+                for (let supportedTokenSymbol of supportedTokenSymbols) {
+                    const tokenInfo =
+                        config.tokensMap[supportedTokenSymbol][chainId];
+
+                    if (tokenInfo) {
+                        const { address: tokenAddress } = tokenInfo;
+                        const lpManagerAddress =
+                            config.chainIdMap[chainId].LPManagerAddress[
+                                version
+                            ];
+                        const tokenBalance = await getBalance(
+                            tokenAddress,
+                            chainId,
+                            lpManagerAddress
+                        );
+                        const liquidityAdded = await getLiquidityAdded(
+                            tokenAddress,
+                            chainId,
+                            lpManagerAddress
+                        );
+                        if (tokenBalance) {
+                            liquidityData.push({
+                                supportedTokenSymbol,
+                                liquidity: Number.parseFloat(tokenBalance),
+                                totalLiquidity:
+                                    Number.parseFloat(liquidityAdded),
+                            });
+                        }
+                    } else {
+                        console.info(
+                            `Token ${supportedTokenSymbol} is not supported`
+                        );
+                    }
+                }
+                setLiquidityData(liquidityData);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
         setLiquidityData([]);
-        let chainId = props.chainId;
         if (chainId) {
             fetchAvailableLiquidity(chainId);
         } else {
             setError("No chainId passed to component");
         }
-    }, [version]);
+    }, [chainId, supportedTokenSymbols, version]);
 
-    const fetchAvailableLiquidity = async (chainId) => {
-        try {
-            let supportedTokens = props.supportedTokenSymbols;
-            let _liquidityData = [];
-            for (let index = 0; index < supportedTokens.length; index++) {
-                let tokenSymbol = supportedTokens[index];
-                let tokenInfo = config.tokensMap[tokenSymbol][chainId];
-                if (tokenInfo) {
-                    let tokenAddress = tokenInfo.address;
-                    let lpManagerAddress =
-                        config.chainIdMap[chainId].LPManagerAddress[version];
-                    let tokenBalance = await getBalance(
-                        tokenAddress,
-                        chainId,
-                        lpManagerAddress
-                    );
-                    let liquidityAdded = await getLiquidityAdded(
-                        tokenAddress,
-                        chainId,
-                        lpManagerAddress
-                    );
-                    if (tokenBalance != undefined) {
-                        tokenBalance = parseFloat(tokenBalance);
-                        _liquidityData.push({
-                            tokenSymbol,
-                            liquidity: tokenBalance,
-                            totalLiquidity: parseFloat(liquidityAdded),
-                        });
-                        setLiquidityData([
-                            ..._liquidityData,
-                            { tokenSymbol, liquidity: tokenBalance },
-                        ]);
-                    }
-                } else {
-                    console.info(`Token ${tokenSymbol} is not supported`);
-                }
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    };
     return (
         <div className={classes.root}>
             {liquidityData && liquidityData.length > 0 && (
@@ -110,13 +114,13 @@ export default function AvailableLiquidityGraph(props) {
 
                     <BarSeries
                         valueField="liquidity"
-                        argumentField="tokenSymbol"
+                        argumentField="supportedTokenSymbol"
                         name="Available"
-                        color={config.chainIdMap[props.chainId].color}
+                        color={config.chainIdMap[chainId].color}
                     />
                     <BarSeries
                         valueField="totalLiquidity"
-                        argumentField="tokenSymbol"
+                        argumentField="supportedTokenSymbol"
                         name="Total"
                     />
                     <Legend verticalAlignment="bottom" />
@@ -124,9 +128,7 @@ export default function AvailableLiquidityGraph(props) {
                     <Stack />
                     <Animation />
                     <Title
-                        text={`Available Liquidity (${
-                            config.chainIdMap[props.chainId].name
-                        })`}
+                        text={`Available Liquidity (${config.chainIdMap[chainId].name})`}
                         textComponent={TextComponent}
                     />
                     <EventTracker />
@@ -134,8 +136,8 @@ export default function AvailableLiquidityGraph(props) {
                     <Tooltip />
                 </Chart>
             )}
-            {(!liquidityData || liquidityData.length == 0) && (
-                <div> {error} </div>
+            {(!liquidityData || liquidityData.length === 0) && (
+                <div>{error}</div>
             )}
         </div>
     );
