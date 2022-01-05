@@ -5,7 +5,6 @@ const useStyles = makeStyles({
     container: {
         display: "flex",
         flexDirection: "column",
-        margin: "12px",
         backgroundImage:
             "radial-gradient(farthest-side at 20% 10%,#615CCD,black)",
         borderRadius: "5px",

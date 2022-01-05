@@ -24,7 +24,6 @@ import { getStartAndEndTime } from "../../utils/getStartAndEndTime";
 const useStyles = makeStyles({
     root: {
         padding: "5px",
-        margin: "12px",
         height: "310px!important",
         border: "2px solid #615CCD",
         borderRadius: "5px",

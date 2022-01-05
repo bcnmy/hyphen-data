@@ -11,9 +11,6 @@ import { Container } from "@material-ui/core";
 let { config } = require("../../config");
 
 const useStyles = makeStyles((theme) => ({
-    totalDepositContainer: {
-        padding: "10px",
-    },
     cumulativeDataRow: {
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
@@ -21,9 +18,6 @@ const useStyles = makeStyles((theme) => ({
     chainDataRow: {
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-    },
-    graphContainer: {
-        padding: "15px",
     },
     graphComponentRow: {
         display: "grid",
@@ -50,8 +44,8 @@ export default function Home(props) {
     );
 
     return (
-        <Container maxWidth="xl">
-            <div className={classes.totalDepositContainer}>
+        <>
+            <>
                 <div className={classes.cumulativeDataRow}>
                     <TotalDepositWithDuration
                         chainIds={supportedChainIds}
@@ -76,13 +70,6 @@ export default function Home(props) {
                         fromChainId={supportedChainIds[0]}
                         toChainId={supportedChainIds[2]}
                     />
-                    {/* <TotalDepositPerNetwork chainId={5} title="Cumulative Volume"/>
-                    <TotalDepositPerNetwork chainId={80001} title="Cumulative Volume"/> */}
-
-                    {/* <TotalDepositPerToken tokenSymbol="USDC" chainId={5}/>
-                    <TotalDepositPerToken tokenSymbol="USDT" chainId={5}/>
-                    <TotalDepositPerToken tokenSymbol="USDC" chainId={80001}/>
-                    <TotalDepositPerToken tokenSymbol="USDT" chainId={80001}/> */}
                 </div>
 
                 {config.supportedChainsArray &&
@@ -108,8 +95,8 @@ export default function Home(props) {
                             />
                         </div>
                     ))}
-            </div>
-            <div className={classes.graphContainer}>
+            </>
+            <>
                 <div className={classes.graphComponentRow}>
                     <DailyDepositGraph chainIds={supportedChainIds} days={15} />
                     <FeeEarnedGraph chainIds={supportedChainIds} days={15} />
@@ -136,7 +123,7 @@ export default function Home(props) {
                             />
                         ))}
                 </div>
-            </div>
-        </Container>
+            </>
+        </>
     );
 }

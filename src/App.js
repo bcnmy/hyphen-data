@@ -1,7 +1,6 @@
 import "./App.css";
 import { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import HyphenIcon from "./assets/Hyphen_icon.png";
 import Header from "./components/Header";
 import Home from "./components/page/Home";
 import TransferDetails from "./components/page/TransferDetails";
@@ -52,7 +51,7 @@ function App() {
 
     return (
         <div className={classes.root}>
-            <Header title="Hyphen" logo={HyphenIcon} />
+            <Header />
             {currentComponent}
         </div>
     );
