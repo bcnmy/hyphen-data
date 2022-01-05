@@ -29,9 +29,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const durationStyle = {
-    backgroundImage: "none",
+    background: "rgba(97, 92, 205, 0.1)",
     color: "#615CCD",
-    border: "2px solid #111",
+    border: "none",
 };
 
 export default function Home(props) {

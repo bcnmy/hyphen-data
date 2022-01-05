@@ -1,10 +1,9 @@
-import PolygonLogo from "./assets/polygon-matic-logo.png";
-import AvalancheLogo from "./assets/avalanche-logo.png";
-import EthereumLogo from "./assets/Ethereum.png";
-import USDCLogo from "./assets/usdc.png";
-import USDTLogo from "./assets/usdt.png";
-import DAILogo from "./assets/dai.png";
-import ETHLogo from "./assets/Ethereum.png";
+import maticLogo from "./assets/matic-logo.svg";
+import avaxLogo from "./assets/avax-logo.svg";
+import ethLogo from "./assets/eth-logo.svg";
+import usdcLogo from "./assets/usdc.png";
+import usdtLogo from "./assets/usdt.png";
+import daiLogo from "./assets/dai.png";
 
 const abiDecoder = require('abi-decoder');
 
@@ -19,18 +18,18 @@ var config = {};
 config.counterFormat = '$ 0,0';
 config.getEnv = getEnv;
 config.tokenLogoMap = {
-    "USDC": USDCLogo,
-    "USDT": USDTLogo,
-    "DAI": DAILogo,
-    "ETH": ETHLogo
+    "USDC": usdcLogo,
+    "USDT": usdtLogo,
+    "DAI": daiLogo,
+    "ETH": ethLogo
 }
 
 config.chainLogoMap = {
-    80001: PolygonLogo,
-    5: EthereumLogo,
-    137: PolygonLogo,
-    1: EthereumLogo,
-    43114: AvalancheLogo
+    80001: maticLogo,
+    5: ethLogo,
+    137: maticLogo,
+    1: ethLogo,
+    43114: avaxLogo
 }
 let ethereumColor = "#868EAC";
 let polygonColor = "#8247E5";

@@ -1,114 +1,176 @@
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 
+import positiveChangeArrow from "../../assets/positive-change-arrow.svg";
+import negativeChangeArrow from "../../assets/negative-change-arrow.svg";
+import { Box } from "@material-ui/core";
+
 const useStyles = makeStyles({
     container: {
+        height: "184px",
         display: "flex",
         flexDirection: "column",
-        backgroundImage:
-            "radial-gradient(farthest-side at 20% 10%,#615CCD,black)",
-        borderRadius: "5px",
+        borderRadius: "10px",
+        padding: "30px",
         color: "#fff",
     },
-    row: {
-        padding: "5px 10px",
+    ethBg: {
+        background: "linear-gradient(239.66deg, #8B92AF 0%, #000000 68.46%)",
+    },
+    maticBg: {
+        background: "linear-gradient(239.66deg, #8247E5 0%, #000000 68.46%)",
+    },
+    avaxBg: {
+        background: "linear-gradient(239.66deg, #E84142 0%, #000000 68.46%)",
     },
     headerRow: {
-        marginTop: "5px",
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
+        marginBottom: "12px",
         fontWeight: "bold",
     },
     headerTitle: {
-        fontSize: "16px",
+        fontSize: "18px",
+        color: "#00000080",
+    },
+    headerTitleWhite: {
+        fontSize: "18px",
+        color: "#ffffff80",
+    },
+    headerImage: {
+        height: "20px",
+        width: "auto",
     },
     valueRow: {
-        textAlign: "center",
-        fontSize: "30px",
-        padding: "30px 20px",
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
+        marginBottom: "12px",
+        fontSize: "36px",
+        fontWeight: "500",
     },
-    logoIcon: {
-        width: "15px",
-        margin: "0px 5px",
+    percentageChangeArrow: {
+        marginRight: "4px",
     },
-    percentageChange: {
-        fontSize: "20px",
-        marginLeft: "10px",
-        fontWeight: "bold",
+    percentageChangeText: {
+        fontSize: "18px",
+        fontVariantNumeric: "tabular-nums",
     },
-    green: {
-        color: "#50E2AE",
+    positivePercentageChangeColor: {
+        color: "#50af95",
     },
-    red: {
-        color: "#D42A4A",
-    },
-    darkGreen: {
-        color: "#0E8B5E",
-    },
-    darkRed: {
-        color: "#D32E4B",
+    negativePercentageChangeColor: {
+        color: "#ea4335",
     },
 });
 
-export default function Counter(props) {
+function getContainerBgName(chainName) {
+    switch (chainName) {
+        case "Ethereum":
+            return "ethBg";
+        case "Polygon":
+            return "maticBg";
+        case "Avalanche":
+            return "avaxBg";
+        default:
+            return "";
+    }
+}
+
+function PositivePercentageChange({ percentageChange }) {
     const classes = useStyles();
 
-    let percChangeComponent;
-    if (
+    return (
+        <Box sx={{ display: "flex", alignContent: "center" }}>
+            <img
+                alt="Positive change"
+                className={classes.percentageChangeArrow}
+                src={positiveChangeArrow}
+            />
+            <span
+                className={clsx(
+                    classes.percentageChangeText,
+                    classes.positivePercentageChangeColor
+                )}
+            >
+                {percentageChange}%
+            </span>
+        </Box>
+    );
+}
+
+function NegativePercentageChange({ percentageChange }) {
+    const classes = useStyles();
+
+    return (
+        <Box sx={{ display: "flex", alignContent: "center" }}>
+            <img
+                alt="Negative change"
+                className={classes.percentageChangeArrow}
+                src={negativeChangeArrow}
+            />
+            <span
+                className={clsx(
+                    classes.percentageChangeText,
+                    classes.negativePercentageChangeColor
+                )}
+            >
+                {Math.abs(percentageChange)}%
+            </span>
+        </Box>
+    );
+}
+
+export default function Counter(props) {
+    const classes = useStyles();
+    const percentageChange =
         props.previousCounter !== undefined &&
         props.counter !== undefined &&
         props.counter !== 0
-    ) {
-        let percentageChange =
-            ((props.counter - props.previousCounter) / props.counter) * 100;
-        if (percentageChange) percentageChange = percentageChange.toFixed(0);
-        if (percentageChange >= 0) {
-            percChangeComponent = (
-                <div
-                    className={clsx(
-                        classes.percentageChange,
-                        props.lightBackground
-                            ? classes.darkGreen
-                            : classes.green
-                    )}
-                >
-                    +{percentageChange}%
-                </div>
-            );
-        } else {
-            percChangeComponent = (
-                <div
-                    className={clsx(
-                        classes.percentageChange,
-                        props.lightBackground ? classes.darkRed : classes.red
-                    )}
-                >
-                    {percentageChange}%
-                </div>
-            );
-        }
-    }
+            ? (
+                  ((props.counter - props.previousCounter) / props.counter) *
+                  100
+              ).toFixed(0)
+            : 0;
+
+    console.log(props.chainName);
+    console.log(getContainerBgName(props.chainName));
 
     return (
-        <div className={classes.container} style={props.style}>
+        <div
+            className={clsx(
+                classes.container,
+                classes[getContainerBgName(props.chainName)]
+            )}
+            style={props.style}
+        >
             <div className={clsx(classes.row, classes.headerRow)}>
-                <div className={classes.headerTitle}>{props.title}</div>
-                <div className={classes.chainLogoContainer}>
-                    {props.chainInfo}
-                </div>
+                <span
+                    className={clsx(
+                        props.chainName ? null : classes.headerTitle,
+                        props.chainName ? classes.headerTitleWhite : null
+                    )}
+                >
+                    {props.title}
+                </span>
+                {props.chainImage ? (
+                    <img
+                        className={classes.headerImage}
+                        src={props.chainImage}
+                        alt="Chain type"
+                    />
+                ) : null}
             </div>
-            <div
+            <span
                 className={clsx(classes.row, classes.valueRow)}
                 style={props.labelContainerStyle}
             >
-                {props.label || "..."}{" "}
-                {props.previousCounter != undefined && percChangeComponent}
-            </div>
+                {props.label || "..."}
+            </span>
+            {props.previousCounter !== undefined && percentageChange >= 0 ? (
+                <PositivePercentageChange percentageChange={percentageChange} />
+            ) : null}
+            {props.previousCounter !== undefined && percentageChange < 0 ? (
+                <NegativePercentageChange percentageChange={percentageChange} />
+            ) : null}
         </div>
     );
 }
