@@ -19,6 +19,9 @@ const useStyles = makeStyles((theme) => ({
     },
     graphComponentRow: {
         marginBottom: "4px",
+        "&:last-child": {
+            marginBottom: "0px",
+        },
     },
 }));
 

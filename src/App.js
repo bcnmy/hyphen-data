@@ -12,6 +12,7 @@ let { config } = require("./config");
 const useStyles = makeStyles({
     root: {
         fontFamily: "Roboto Mono",
+        padding: "0 40px 40px"
     },
 });
 

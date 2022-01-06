@@ -8,20 +8,23 @@ import hyphenLogo from "../assets/hyphen-logo.svg";
 
 const useStyles = makeStyles((theme) => ({
     root: {
+        padding: "40px 0 12px",
+        position: "sticky",
+        top: "0px",
+        backgroundColor: "#ffffff",
+        zIndex: "10",
+    },
+    headerContent: {
         display: "flex",
         flexWrap: "wrap",
         flexDirection: "row",
         alignItems: "center",
-        marginBottom: "12px",
         padding: "30px",
         background: "#f8f8f8",
-        position: "sticky",
-        top: "0px",
-        left: "0px",
         width: "100%",
         height: "auto",
         minHeight: "108px",
-        zIndex: "10",
+        border: "2px solid transparent",
         borderRadius: "10px",
     },
     heading: {
@@ -59,11 +62,17 @@ export default function Header() {
     };
     return (
         <header className={classes.root}>
-            <div className={classes.heading} onClick={showHomePage}>
-                <img src={hyphenLogo} alt="Hyphen" className={classes.logo} />
+            <div className={classes.headerContent}>
+                <div className={classes.heading} onClick={showHomePage}>
+                    <img
+                        src={hyphenLogo}
+                        alt="Hyphen"
+                        className={classes.logo}
+                    />
+                </div>
+                <VersionSwitch />
+                <SearchBar />
             </div>
-            <VersionSwitch />
-            <SearchBar />
         </header>
     );
 }
