@@ -50,7 +50,7 @@ function App() {
     }, [currentPage]);
 
     return (
-        <Container maxWidth="lg" className={classes.root}>
+        <Container maxWidth="xl" className={classes.root}>
             <Header />
             {currentComponent}
         </Container>

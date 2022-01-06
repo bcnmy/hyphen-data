@@ -39,7 +39,7 @@ const useStyles = makeStyles({
         color: "#ffffff80",
     },
     headerImage: {
-        height: "20px",
+        height: "28px",
         width: "auto",
     },
     valueRow: {
@@ -130,9 +130,6 @@ export default function Counter(props) {
                   100
               ).toFixed(0)
             : 0;
-
-    console.log(props.chainName);
-    console.log(getContainerBgName(props.chainName));
 
     return (
         <div

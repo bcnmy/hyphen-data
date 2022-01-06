@@ -15,16 +15,10 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: "4px",
     },
     chainDataRow: {
-        marginBottom: "8px",
+        marginBottom: "4px",
     },
     graphComponentRow: {
-        display: "grid",
-        [theme.breakpoints.between("xs", "md")]: {
-            gridTemplateColumns: "repeat(auto-fit, 1fr)",
-        },
-        "@media (min-width: 1280px)": {
-            gridTemplateColumns: "repeat(auto-fit, minmax(554px, 1fr))",
-        },
+        marginBottom: "4px",
     },
 }));
 
@@ -107,32 +101,52 @@ export default function Home(props) {
                 </Grid>
             ) : null}
 
-            <div className={classes.graphComponentRow}>
-                <DailyDepositGraph chainIds={supportedChainIds} days={15} />
-                <FeeEarnedGraph chainIds={supportedChainIds} days={15} />
-            </div>
-            <div className={classes.graphComponentRow}>
-                {config.supportedChainsArray &&
-                    config.supportedChainsArray.length > 0 &&
-                    config.supportedChainsArray.map((item, index) => (
-                        <AvailableLiquidityGraph
-                            chainId={item.chainId}
-                            supportedTokenSymbols={["USDT", "USDC"]}
-                            key={`AL_${index}`}
-                        />
+            <Grid container spacing={1} className={classes.graphComponentRow}>
+                <Grid item xs={12} lg={6}>
+                    <DailyDepositGraph chainIds={supportedChainIds} days={15} />
+                </Grid>
+                <Grid item xs={12} lg={6}>
+                    <FeeEarnedGraph chainIds={supportedChainIds} days={15} />
+                </Grid>
+            </Grid>
+
+            {config.supportedChainsArray &&
+            config.supportedChainsArray.length > 0 ? (
+                <Grid
+                    container
+                    spacing={1}
+                    className={classes.graphComponentRow}
+                >
+                    {config.supportedChainsArray.map((item, index) => (
+                        <Grid item xs={12} md={4}>
+                            <AvailableLiquidityGraph
+                                chainId={item.chainId}
+                                supportedTokenSymbols={["USDT", "USDC"]}
+                                key={`AL_${index}`}
+                            />
+                        </Grid>
                     ))}
-            </div>
-            <div className={classes.graphComponentRow}>
-                {config.supportedChainsArray &&
-                    config.supportedChainsArray.length > 0 &&
-                    config.supportedChainsArray.map((item, index) => (
-                        <AvailableLiquidityGraph
-                            chainId={item.chainId}
-                            supportedTokenSymbols={["ETH"]}
-                            key={`AL_${index}`}
-                        />
+                </Grid>
+            ) : null}
+
+            {config.supportedChainsArray &&
+            config.supportedChainsArray.length > 0 ? (
+                <Grid
+                    container
+                    spacing={1}
+                    className={classes.graphComponentRow}
+                >
+                    {config.supportedChainsArray.map((item, index) => (
+                        <Grid item xs={12} md={4}>
+                            <AvailableLiquidityGraph
+                                chainId={item.chainId}
+                                supportedTokenSymbols={["ETH"]}
+                                key={`AL_${index}`}
+                            />
+                        </Grid>
                     ))}
-            </div>
+                </Grid>
+            ) : null}
         </>
     );
 }
