@@ -8,7 +8,7 @@ import { Box } from "@material-ui/core";
 const useStyles = makeStyles({
     container: {
         height: "auto",
-        minHeight: "184px",
+        minHeight: "185px",
         display: "flex",
         flexDirection: "column",
         borderRadius: "10px",
@@ -28,7 +28,7 @@ const useStyles = makeStyles({
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
-        marginBottom: "12px",
+        marginBottom: "8px",
         fontWeight: "bold",
     },
     headerTitle: {
@@ -44,7 +44,7 @@ const useStyles = makeStyles({
         width: "auto",
     },
     valueRow: {
-        marginBottom: "12px",
+        marginBottom: "8px",
         fontSize: "36px",
         fontWeight: "500",
     },
