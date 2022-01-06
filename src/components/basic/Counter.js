@@ -7,7 +7,8 @@ import { Box } from "@material-ui/core";
 
 const useStyles = makeStyles({
     container: {
-        height: "184px",
+        height: "auto",
+        minHeight: "184px",
         display: "flex",
         flexDirection: "column",
         borderRadius: "10px",
@@ -156,12 +157,12 @@ export default function Counter(props) {
                     />
                 ) : null}
             </div>
-            <span
+            <div
                 className={clsx(classes.row, classes.valueRow)}
                 style={props.labelContainerStyle}
             >
                 {props.label || "..."}
-            </span>
+            </div>
             {props.previousCounter !== undefined && percentageChange >= 0 ? (
                 <PositivePercentageChange percentageChange={percentageChange} />
             ) : null}
