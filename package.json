@@ -4,9 +4,6 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.3.21",
-    "@devexpress/dx-react-chart": "^2.7.6",
-    "@devexpress/dx-react-chart-material-ui": "^2.7.6",
-    "@devexpress/dx-react-core": "^2.7.6",
     "@material-ui/core": "^4.12.2",
     "@material-ui/icons": "^4.11.2",
     "@nivo/bar": "^0.78.0",

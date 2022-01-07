@@ -10,7 +10,7 @@ const useStyles = makeStyles({
     root: {
         padding: "12px",
         height: "340px",
-        border: "2px solid #615ccd80",
+        border: "1px solid #dddddd",
         borderRadius: "10px",
     },
     graphTitle: {
@@ -23,6 +23,7 @@ const useStyles = makeStyles({
 });
 
 export default function DailyDepositGraph({ chainIds, days = 30 }) {
+    const graphTitle = "Daily Volume (USD)";
     const classes = useStyles();
     const [dailyDeposits, setDailyDeposits] = useState([]);
     const [chainNames, setChainNames] = useState();
@@ -76,9 +77,9 @@ export default function DailyDepositGraph({ chainIds, days = 30 }) {
 
     return (
         <div className={classes.root}>
-            <h2 className={classes.graphTitle}>Daily Volume (USD)</h2>
+            <h2 className={classes.graphTitle}>{graphTitle}</h2>
             <StackedBarGraph
-                ariaLabel="Daily Volume (USD)"
+                ariaLabel={graphTitle}
                 axisBottomName="Date"
                 axisLeftName="Volume"
                 data={dailyDeposits}

@@ -1,6 +1,6 @@
 import { ResponsiveBar } from "@nivo/bar";
 
-function StackedBarGraph({
+function GroupedBarGraph({
     ariaLabel,
     axisBottomName,
     axisLeftName,
@@ -8,16 +8,19 @@ function StackedBarGraph({
     indexBy,
     keys,
 }) {
+    console.log({ data, keys });
+
     return data.length > 0 && keys.length > 0 ? (
         <ResponsiveBar
             data={data}
             keys={keys}
             indexBy={indexBy}
+            groupMode="grouped"
             margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
             padding={0.3}
             valueScale={{ type: "linear" }}
             indexScale={{ type: "band", round: true }}
-            valueFormat=" >-$d"
+            valueFormat=" >-d"
             colors={{ scheme: "nivo" }}
             borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
             height={288}
@@ -76,4 +79,4 @@ function StackedBarGraph({
     ) : null;
 }
 
-export { StackedBarGraph };
+export { GroupedBarGraph };
