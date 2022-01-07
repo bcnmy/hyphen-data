@@ -26,12 +26,12 @@ function App() {
 
     useEffect(() => {
         if (
-            config.supportedChainArrray &&
-            config.supportedChainArrray.length > 0
+            config.supportedChainsArray &&
+            config.supportedChainsArray.length > 0
         ) {
             dispatch(
                 updateSearchState({
-                    networkId: config.supportedChainArrray[0].chainId,
+                    networkId: config.supportedChainsArray[0].chainId,
                 })
             );
         }

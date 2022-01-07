@@ -33,7 +33,7 @@ const BootstrapInput = withStyles((theme) => ({
         'sans-serif',
         '"Apple Color Emoji"',
         '"Segoe UI Emoji"',
-        '"Segoe UI Symbol"',  
+        '"Segoe UI Symbol"',
     ].join(','),
     '&:focus': {
       borderRadius: 4,
@@ -70,7 +70,7 @@ export default function SearchBar(props) {
     const dispatch = useDispatch();
     const classes = useStyles();
 
-    const [selectedNetwork, setSelectedNetwork] = useState(config.supportedChainArrray[0].chainId);
+    const [selectedNetwork, setSelectedNetwork] = useState(config.supportedChainsArray[0].chainId);
     const [_searchText, setSearchText] = useState("");
 
     const handleNetworkChange = (event) => {
@@ -100,7 +100,7 @@ export default function SearchBar(props) {
                 input={<BootstrapInput />}
                 onChange={handleNetworkChange}>
 
-                {config.supportedChainArrray.map((item, index) =>
+                {config.supportedChainsArray.map((item, index) =>
                     <MenuItem key={`ChainMenuItem_${index}`} value={item.chainId}>{item.name}</MenuItem>
                 )}
             </Select>

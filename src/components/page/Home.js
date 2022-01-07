@@ -1,10 +1,6 @@
-import { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
-import TotalDepositPerToken from "../deposit/TotalDepositPerToken";
 import CumulativeDeposit from "../deposit/CumulativeDeposit";
 import UniqueWalletCount from "../user/UniqueWalletCount";
-import TotalDepositPerNetwork from "../deposit/TotalDepositPerNetwork";
 import TotalDepositWithDuration from "../deposit/TotalDepositWithDuration";
 import DailyDepositGraph from "../deposit/DailyDepositGraph";
 import FeeEarnedGraph from "../fee/FeeEarnedGraph";
@@ -40,21 +36,18 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const durationStyle = {
+    backgroundImage: "none",
+    color: "#615CCD",
+    border: "2px solid #111",
+};
+
 export default function Home(props) {
     const classes = useStyles();
 
-    let durationStyle = {
-        backgroundImage: "none",
-        color: "#615CCD",
-        border: "2px solid #111",
-    };
-
-    let supportedChainIds = [];
-    if (config.supportedChainArrray && config.supportedChainArrray.length > 0) {
-        config.supportedChainArrray.forEach((chain) =>
-            supportedChainIds.push(chain.chainId)
-        );
-    }
+    const supportedChainIds = config.supportedChainsArray.map(
+        (supportedChain) => supportedChain.chainId
+    );
 
     return (
         <Container maxWidth="xl">
@@ -92,9 +85,9 @@ export default function Home(props) {
                     <TotalDepositPerToken tokenSymbol="USDT" chainId={80001}/> */}
                 </div>
 
-                {config.supportedChainArrray &&
-                    config.supportedChainArrray.length > 0 &&
-                    config.supportedChainArrray.map((item, index) => (
+                {config.supportedChainsArray &&
+                    config.supportedChainsArray.length > 0 &&
+                    config.supportedChainsArray.map((item, index) => (
                         <div
                             className={classes.chainDataRow}
                             key={`NetworkRow_${index}`}
@@ -122,9 +115,9 @@ export default function Home(props) {
                     <FeeEarnedGraph chainIds={supportedChainIds} days={15} />
                 </div>
                 <div className={classes.graphComponentRow}>
-                    {config.supportedChainArrray &&
-                        config.supportedChainArrray.length > 0 &&
-                        config.supportedChainArrray.map((item, index) => (
+                    {config.supportedChainsArray &&
+                        config.supportedChainsArray.length > 0 &&
+                        config.supportedChainsArray.map((item, index) => (
                             <AvailableLiquidityGraph
                                 chainId={item.chainId}
                                 supportedTokenSymbols={["USDT", "USDC"]}
@@ -133,9 +126,9 @@ export default function Home(props) {
                         ))}
                 </div>
                 <div className={classes.graphComponentRow}>
-                    {config.supportedChainArrray &&
-                        config.supportedChainArrray.length > 0 &&
-                        config.supportedChainArrray.map((item, index) => (
+                    {config.supportedChainsArray &&
+                        config.supportedChainsArray.length > 0 &&
+                        config.supportedChainsArray.map((item, index) => (
                             <AvailableLiquidityGraph
                                 chainId={item.chainId}
                                 supportedTokenSymbols={["ETH"]}

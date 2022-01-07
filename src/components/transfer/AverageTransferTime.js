@@ -48,7 +48,7 @@ export default function AverageTransferTime(props) {
     const [selectedFromChain, setSelectedFromChain] = useState();
     const [selectedToChain, setSelectedToChain] = useState();
 
-    const [sourceChains, setSourceChains] = useState(config.supportedChainArrray);
+    const [sourceChains, setSourceChains] = useState(config.supportedChainsArray);
     const [destinationChains, setDestinationChains] = useState();
 
     const version = useSelector(state => state.root.version);
@@ -88,7 +88,7 @@ export default function AverageTransferTime(props) {
     useEffect(()=>{
         if(selectedFromChain && selectedToChain) {
             fetchAverageTransferTime(selectedFromChain.chainId, selectedToChain.chainId, 30);
-        }    
+        }
     }, [selectedFromChain, selectedToChain]);
 
     useEffect(()=>{
@@ -115,7 +115,7 @@ export default function AverageTransferTime(props) {
                     }
                 })(depositTransactions[index]);
             }
-        }   
+        }
     }
 
     const onFromChainChanged = async (event) => {
@@ -149,7 +149,7 @@ export default function AverageTransferTime(props) {
     }}>
         <div>{averageTime}</div>
         <div className={classes.chainInfoContainer}>
-            
+
             {sourceChains && selectedFromChain &&
                 <FormControl variant="outlined" className={classes.chainName} size="small">
                     <Select
@@ -170,9 +170,9 @@ export default function AverageTransferTime(props) {
                 <img className={classes.logoIcon} src={config.chainLogoMap[fromChainId]}/>
                 {config.chainIdMap[fromChainId].name}
             </div> */}
-            
+
             <img src={Arrow} className={clsx(classes.logoIcon, classes.swapIcon)} onClick={swapChains}/>
-            
+
             {destinationChains && selectedToChain &&
                 <FormControl variant="outlined" className={classes.chainName} size="small">
                     <Select
