@@ -1,46 +1,26 @@
 import { useEffect, useState } from "react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { useSelector } from "react-redux";
-import {
-    Chart,
-    BarSeries,
-    ArgumentAxis,
-    ValueAxis,
-    Legend,
-    Title,
-    Tooltip,
-} from "@devexpress/dx-react-chart-material-ui";
-import {
-    Animation,
-    EventTracker,
-    HoverState,
-    Stack,
-} from "@devexpress/dx-react-chart";
 import { getDailyDepositsUSD } from "../../service/deposit";
 import { config } from "../../config";
-import NumericGraphLabel from "../basic/NumericGraphLabel";
 import { getStartAndEndTime } from "../../utils/getStartAndEndTime";
+import { StackedBarGraph } from "../graphs/StackedBarGraph";
 
 const useStyles = makeStyles({
     root: {
-        padding: "5px",
-        height: "310px!important",
-        border: "2px solid #615CCD",
-        borderRadius: "5px",
+        padding: "12px",
+        height: "340px",
+        border: "2px solid #615ccd80",
+        borderRadius: "10px",
+    },
+    graphTitle: {
+        display: "inline-block",
+        textAlign: "left",
+        fontSize: "18px",
+        marginLeft: "32px",
+        marginBottom: "0",
     },
 });
-
-const styles = {
-    titleText: {
-        textAlign: "left",
-        padding: "0px 5px 10px 5px",
-        fontSize: "20px",
-    },
-};
-
-const TextComponent = withStyles(styles)(({ classes, ...restProps }) => (
-    <Title.Text {...restProps} className={classes.titleText} />
-));
 
 export default function DailyDepositGraph({ chainIds, days = 30 }) {
     const classes = useStyles();
@@ -71,8 +51,8 @@ export default function DailyDepositGraph({ chainIds, days = 30 }) {
                                 dateObject.getMonth() + 1
                             }`,
                             ...chainIds.reduce((acc, chainId) => {
-                                acc[`amount${chainId}`] =
-                                    dailyDepositsMap[chainId][date];
+                                acc[`${config.chainIdMap[chainId].name}`] =
+                                    dailyDepositsMap[chainId][date] || 0;
                                 return acc;
                             }, {}),
                         },
@@ -96,36 +76,15 @@ export default function DailyDepositGraph({ chainIds, days = 30 }) {
 
     return (
         <div className={classes.root}>
-            {dailyDeposits && chainNames && dailyDeposits.length > 0 && (
-                <Chart data={dailyDeposits} height="300">
-                    <ArgumentAxis />
-                    <ValueAxis labelComponent={NumericGraphLabel} />
-
-                    {chainIds &&
-                        chainIds.map((chainId, index) => (
-                            <BarSeries
-                                valueField={`amount${chainId}`}
-                                argumentField="date"
-                                name={config.chainIdMap[chainId].name}
-                                key={`BarGraph_${index}`}
-                                barWidth="0.2"
-                                color={config.chainIdMap[chainId].color}
-                            />
-                        ))}
-
-                    <Stack stacks={[{ series: chainNames }]} />
-                    <Animation />
-                    <Legend verticalAlignment="bottom" />
-
-                    <Title
-                        text={`Daily Volume (USD)`}
-                        textComponent={TextComponent}
-                    />
-                    <EventTracker />
-                    <HoverState />
-                    <Tooltip />
-                </Chart>
-            )}
+            <h2 className={classes.graphTitle}>Daily Volume (USD)</h2>
+            <StackedBarGraph
+                ariaLabel="Daily Volume (USD)"
+                axisBottomName="Date"
+                axisLeftName="Volume"
+                data={dailyDeposits}
+                indexBy="date"
+                keys={chainNames}
+            />
         </div>
     );
 }
