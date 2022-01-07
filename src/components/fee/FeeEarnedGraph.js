@@ -1,158 +1,95 @@
 import { useEffect, useState } from "react";
-import { scaleBand } from "@devexpress/dx-chart-core";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
-import { useSelector, useDispatch } from "react-redux";
-import {
-    Chart,
-    BarSeries,
-    ArgumentAxis,
-    ValueAxis,
-    Legend,
-    Title,
-    Tooltip,
-} from "@devexpress/dx-react-chart-material-ui";
-import { scaleTime } from "d3-scale";
-import {
-    ArgumentScale,
-    Animation,
-    EventTracker,
-    HoverState,
-} from "@devexpress/dx-react-chart";
-import { ValueScale, Stack } from "@devexpress/dx-react-chart";
+import { makeStyles } from "@material-ui/core/styles";
+import { useSelector } from "react-redux";
 import { getDailyFee } from "../../service/fee";
 import { config } from "../../config";
+import { getStartAndEndTime } from "../../utils/getStartAndEndTime";
+import { StackedBarGraph } from "../graphs/StackedBarGraph";
 
 const useStyles = makeStyles({
     root: {
-        padding: "5px",
-        margin: "12px",
-        height: "310px!important",
-        border: "2px solid #615CCD",
-        borderRadius: "5px",
+        padding: "12px",
+        height: "340px",
+        border: "1px solid #dddddd",
+        borderRadius: "10px",
+    },
+    graphTitle: {
+        display: "inline-block",
+        textAlign: "left",
+        fontSize: "18px",
+        marginLeft: "32px",
+        marginBottom: "0",
     },
 });
 
-const styles = {
-    titleText: {
-        textAlign: "left",
-        padding: "0px 5px 10px 5px",
-        fontSize: "20px",
-    },
-};
-
-const TextComponent = withStyles(styles)(({ classes, ...restProps }) => (
-    <Title.Text {...restProps} className={classes.titleText} />
-));
-
-const noOfSecondsInDay = 86400;
-export default function FeeEarnedGraph(props) {
+export default function FeeEarnedGraph({ chainIds, days = 30 }) {
+    const graphTitle = "Daily LP Fee (USD)";
     const classes = useStyles();
     const [dailyFee, setDailyFee] = useState([]);
-    const [chainNameArray, setChainNameArray] = useState();
+    const [chainNames, setChainNames] = useState();
 
     const version = useSelector((state) => state.root.version);
 
     useEffect(() => {
-        const now = Date.now();
-        let chainIds = props.chainIds;
-        let numOfDays = props.days || 30;
+        async function fetchDailyFee(chainIds, startTime, endTime) {
+            try {
+                const dailyFeesMap = {};
+                for (let chainId of chainIds) {
+                    dailyFeesMap[chainId] = await getDailyFee(
+                        chainId,
+                        startTime,
+                        endTime,
+                        version
+                    );
+                }
+                const dates = Object.keys(dailyFeesMap[chainIds[0]]);
+                const dailyFeesArray = dates.reduce((acc, date) => {
+                    const dateObject = new Date(date * 1000);
+                    return [
+                        ...acc,
+                        {
+                            date: `${dateObject.getDate()}/${
+                                dateObject.getMonth() + 1
+                            }`,
+                            ...chainIds.reduce((acc, chainId) => {
+                                const chainName =
+                                    config.chainIdMap[chainId].name;
+                                acc[`${chainName}`] =
+                                    dailyFeesMap[chainId][date] || 0;
+                                acc[`${chainName}Color`] =
+                                    config.chainIdMap[chainId].color;
+                                return acc;
+                            }, {}),
+                        },
+                    ];
+                }, []);
+                setDailyFee(dailyFeesArray);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
         if (chainIds) {
-            const curTimeInSec = parseInt(now / 1000);
-            let startTime = curTimeInSec - noOfSecondsInDay * numOfDays;
-            let endTime = curTimeInSec;
-            let _chainNameArray = [];
-            for (let index = 0; index < chainIds.length; index++) {
-                let item = chainIds[index];
-                _chainNameArray.push(config.chainIdMap[item].name);
-            }
-            setChainNameArray(_chainNameArray);
-            fetchDailyFee(props.chainIds, startTime, endTime);
+            const { startTime, endTime } = getStartAndEndTime(days);
+            const chainNames = chainIds.map((chainId) => {
+                return config.chainIdMap[chainId].name;
+            });
+            setChainNames(chainNames);
+            fetchDailyFee(chainIds, startTime, endTime);
         }
-    }, [version]);
-
-    let fetchDailyFee = async (chainIds, startTime, endTime) => {
-        try {
-            let dailyDepositMap = {};
-            for (let index = 0; index < chainIds.length; index++) {
-                let item = chainIds[index];
-                dailyDepositMap[item] = await getDailyFee(
-                    item,
-                    startTime,
-                    endTime,
-                    version
-                );
-            }
-
-            let dailyDepositArray = [];
-            let longestMap = new Map();
-            for (let index = 0; index < chainIds.length; index++) {
-                let item = chainIds[index];
-                if (longestMap.size < dailyDepositMap[item].size) {
-                    longestMap = dailyDepositMap[item];
-                }
-            }
-
-            let it = longestMap.keys();
-            if (it) {
-                let result = it.next();
-                while (!result.done) {
-                    let key = result.value;
-                    let date = new Date(key * 1000);
-                    let obj = {};
-                    obj["date"] = `${date.getDate()}/${date.getMonth() + 1}`;
-                    for (let index = 0; index < chainIds.length; index++) {
-                        let item = chainIds[index];
-                        let value = dailyDepositMap[item].get(key);
-
-                        if (value != undefined) {
-                            obj[`amount${item}`] = value;
-                        } else {
-                            obj[`amount${item}`] = 0;
-                        }
-                    }
-                    dailyDepositArray.push(obj);
-
-                    result = it.next();
-                }
-            }
-            setDailyFee(dailyDepositArray.reverse());
-        } catch (error) {
-            console.error(error);
-        }
-    };
+    }, [chainIds, days, version]);
 
     return (
         <div className={classes.root}>
-            {dailyFee && chainNameArray && dailyFee.length > 0 && (
-                <Chart data={dailyFee} height="300">
-                    <ValueAxis />
-                    <ArgumentAxis />
-
-                    {props.chainIds &&
-                        props.chainIds.map((item, index) => (
-                            <BarSeries
-                                valueField={`amount${item}`}
-                                argumentField="date"
-                                name={config.chainIdMap[item].name}
-                                key={`BarGraph_${index}`}
-                                barWidth="0.2"
-                                color={config.chainIdMap[item].color}
-                            />
-                        ))}
-
-                    <Stack stacks={[{ series: chainNameArray }]} />
-                    <Animation />
-                    <Legend verticalAlignment="bottom" />
-
-                    <Title
-                        text={`Daily LP Fee (USD)`}
-                        textComponent={TextComponent}
-                    />
-                    <EventTracker />
-                    <HoverState />
-                    <Tooltip />
-                </Chart>
-            )}
+            <h2 className={classes.graphTitle}>{graphTitle}</h2>
+            <StackedBarGraph
+                ariaLabel={graphTitle}
+                axisBottomName="Date"
+                axisLeftName="Fee"
+                data={dailyFee}
+                indexBy="date"
+                keys={chainNames}
+            />
         </div>
     );
 }
