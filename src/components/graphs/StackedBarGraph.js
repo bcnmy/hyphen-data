@@ -1,4 +1,5 @@
 import { ResponsiveBar } from "@nivo/bar";
+import { makeNumberCompact } from "../../utils/makeNumberCompact";
 
 function StackedBarGraph({
     ariaLabel,
@@ -17,13 +18,13 @@ function StackedBarGraph({
             padding={0.3}
             valueScale={{ type: "linear" }}
             indexScale={{ type: "band", round: true }}
-            valueFormat=" >-$d"
             colors={({ id, data }) => data[`${id}Color`]}
             borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
             height={288}
             axisTop={null}
             axisRight={null}
             enableLabel={false}
+            valueFormat={(value) => makeNumberCompact(value)}
             axisBottom={{
                 tickSize: 8,
                 tickPadding: 4,
@@ -35,10 +36,11 @@ function StackedBarGraph({
             axisLeft={{
                 tickSize: 0,
                 tickPadding: 0,
-                tickRotation: 45,
+                tickRotation: 0,
                 legend: axisLeftName,
                 legendPosition: "middle",
                 legendOffset: -48,
+                format: (value) => makeNumberCompact(value),
             }}
             labelTextColor={{ from: "color", modifiers: [["darker", 1.6]] }}
             legends={[

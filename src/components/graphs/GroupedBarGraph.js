@@ -1,4 +1,5 @@
 import { ResponsiveBar } from "@nivo/bar";
+import { makeNumberCompact } from "../../utils/makeNumberCompact";
 
 function GroupedBarGraph({
     ariaLabel,
@@ -25,10 +26,11 @@ function GroupedBarGraph({
             axisTop={null}
             axisRight={null}
             enableLabel={false}
+            valueFormat={(value) => makeNumberCompact(value)}
             axisBottom={{
                 tickSize: 8,
                 tickPadding: 4,
-                tickRotation: 45,
+                tickRotation: 0,
                 legend: axisBottomName,
                 legendPosition: "middle",
                 legendOffset: 40,
@@ -36,10 +38,11 @@ function GroupedBarGraph({
             axisLeft={{
                 tickSize: 0,
                 tickPadding: 0,
-                tickRotation: 45,
+                tickRotation: 0,
                 legend: axisLeftName,
                 legendPosition: "middle",
                 legendOffset: -48,
+                format: (value) => makeNumberCompact(value),
             }}
             labelTextColor={{ from: "color", modifiers: [["darker", 1.6]] }}
             legends={[

@@ -39,9 +39,13 @@ const useStyles = makeStyles({
         fontSize: "18px",
         color: "#ffffff80",
     },
-    headerImage: {
+    headerChainImage: {
         height: "28px",
         width: "auto",
+    },
+    headerChainName: {
+        fontSize: "10px",
+        color: "#ffffff",
     },
     valueRow: {
         marginBottom: "8px",
@@ -150,11 +154,21 @@ export default function Counter(props) {
                     {props.title}
                 </span>
                 {props.chainImage ? (
-                    <img
-                        className={classes.headerImage}
-                        src={props.chainImage}
-                        alt="Chain type"
-                    />
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                        }}
+                    >
+                        <img
+                            className={classes.headerChainImage}
+                            src={props.chainImage}
+                            alt="Chain type"
+                        />
+                        <span className={classes.headerChainName}>
+                            {props.chainName}
+                        </span>
+                    </Box>
                 ) : null}
             </div>
             <div
