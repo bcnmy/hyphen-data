@@ -1,5 +1,4 @@
 import { makeStyles } from "@material-ui/core/styles";
-import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useSelector, useDispatch } from "react-redux";
@@ -9,8 +8,8 @@ import { updateRootState } from "../../redux";
 const useStyles = makeStyles((theme) => ({
     formControl: {
         marginRight: "8px",
-        minWidth: 120,
-        [theme.breakpoints.only("xs")]: {
+        width: "76px",
+        [theme.breakpoints.between("xs", "sm")]: {
             marginRight: "0px",
             marginBottom: "8px",
         },
@@ -20,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function VersionSwitch(props) {
+export default function VersionSwitch() {
     const classes = useStyles();
     const dispatch = useDispatch();
 
@@ -37,14 +36,13 @@ export default function VersionSwitch(props) {
             className={classes.formControl}
             size="small"
         >
-            <InputLabel htmlFor="simple-select-outlined">Version</InputLabel>
             <Select
                 value={version}
                 onChange={handleChange}
-                label="Version"
                 inputProps={{
                     name: "version",
                     id: "simple-select-outlined",
+                    "aria-label": "Without label",
                 }}
             >
                 <MenuItem value="v1">v1</MenuItem>

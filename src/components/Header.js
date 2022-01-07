@@ -4,23 +4,28 @@ import { useDispatch } from "react-redux";
 import { config } from "../config";
 import { updateRootState } from "../redux";
 import VersionSwitch from "./version/VersionSwitch";
+import hyphenLogo from "../assets/hyphen-logo.svg";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        padding: "15px 15px 15px 15px",
+        padding: "40px 0 12px",
+        position: "sticky",
+        top: "0px",
+        backgroundColor: "#ffffff",
+        zIndex: "10",
+    },
+    headerContent: {
         display: "flex",
         flexWrap: "wrap",
         flexDirection: "row",
         alignItems: "center",
-        background: "#fff",
-        boxShadow: "0 1px 10px rgb(0 0 0 / 10%)",
-        position: "sticky",
-        top: "0px",
-        left: "0px",
+        padding: "30px",
+        background: "#f8f8f8",
         width: "100%",
         height: "auto",
-        minHeight: "72px",
-        zIndex: "10",
+        minHeight: "108px",
+        border: "2px solid transparent",
+        borderRadius: "10px",
     },
     heading: {
         cursor: "pointer",
@@ -37,8 +42,8 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     logo: {
-        width: "24px",
-        marginRight: "5px",
+        width: "auto",
+        height: "32px",
     },
     filterContainer: {
         display: "flex",
@@ -48,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Header(props) {
+export default function Header() {
     const classes = useStyles();
     const dispatch = useDispatch();
 
@@ -56,17 +61,18 @@ export default function Header(props) {
         dispatch(updateRootState({ currentPage: config.PAGE.HOME }));
     };
     return (
-        <div className={classes.root}>
-            <div className={classes.heading} onClick={showHomePage}>
-                <img
-                    src={props.logo}
-                    alt={props.title}
-                    className={classes.logo}
-                />
-                {props.title}
+        <header className={classes.root}>
+            <div className={classes.headerContent}>
+                <div className={classes.heading} onClick={showHomePage}>
+                    <img
+                        src={hyphenLogo}
+                        alt="Hyphen"
+                        className={classes.logo}
+                    />
+                </div>
+                <VersionSwitch />
+                <SearchBar />
             </div>
-            <VersionSwitch />
-            <SearchBar />
-        </div>
+        </header>
     );
 }

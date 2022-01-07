@@ -6,40 +6,29 @@ import DailyDepositGraph from "../deposit/DailyDepositGraph";
 import FeeEarnedGraph from "../fee/FeeEarnedGraph";
 import AverageTransferTime from "../transfer/AverageTransferTime";
 import AvailableLiquidityGraph from "../liquidity/AvailableLiquidityGraph";
-import { Container } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 
 let { config } = require("../../config");
 
 const useStyles = makeStyles((theme) => ({
-    totalDepositContainer: {
-        padding: "10px",
-    },
     cumulativeDataRow: {
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+        marginBottom: "4px",
     },
     chainDataRow: {
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-    },
-    graphContainer: {
-        padding: "15px",
+        marginBottom: "4px",
     },
     graphComponentRow: {
-        display: "grid",
-        [theme.breakpoints.between("sm", "md")]: {
-            gridTemplateColumns: "repeat(auto-fit, 1fr)",
-        },
-        "@media (min-width: 1280px)": {
-            gridTemplateColumns: "repeat(auto-fit, minmax(554px, 1fr))",
+        marginBottom: "4px",
+        "&:last-child": {
+            marginBottom: "0px",
         },
     },
 }));
 
 const durationStyle = {
-    backgroundImage: "none",
+    background: "rgba(97, 92, 205, 0.1)",
     color: "#615CCD",
-    border: "2px solid #111",
+    border: "none",
 };
 
 export default function Home(props) {
@@ -50,9 +39,9 @@ export default function Home(props) {
     );
 
     return (
-        <Container maxWidth="xl">
-            <div className={classes.totalDepositContainer}>
-                <div className={classes.cumulativeDataRow}>
+        <>
+            <Grid container spacing={1} className={classes.cumulativeDataRow}>
+                <Grid item xs={12} md={4}>
                     <TotalDepositWithDuration
                         chainIds={supportedChainIds}
                         days={1}
@@ -61,82 +50,106 @@ export default function Home(props) {
                         lightBackground={true}
                         style={durationStyle}
                     />
+                </Grid>
+                <Grid item xs={12} md={4}>
                     <CumulativeDeposit
                         title="Total Volume"
                         chainIds={supportedChainIds}
                         style={durationStyle}
                     />
+                </Grid>
+                <Grid item xs={12} md={4}>
                     <UniqueWalletCount
                         title="Unique User Count"
                         chainIds={supportedChainIds}
                         style={durationStyle}
                     />
+                </Grid>
+                <Grid item xs={12} md={12}>
                     <AverageTransferTime
                         style={durationStyle}
                         fromChainId={supportedChainIds[0]}
                         toChainId={supportedChainIds[2]}
                     />
-                    {/* <TotalDepositPerNetwork chainId={5} title="Cumulative Volume"/>
-                    <TotalDepositPerNetwork chainId={80001} title="Cumulative Volume"/> */}
+                </Grid>
+            </Grid>
 
-                    {/* <TotalDepositPerToken tokenSymbol="USDC" chainId={5}/>
-                    <TotalDepositPerToken tokenSymbol="USDT" chainId={5}/>
-                    <TotalDepositPerToken tokenSymbol="USDC" chainId={80001}/>
-                    <TotalDepositPerToken tokenSymbol="USDT" chainId={80001}/> */}
-                </div>
-
-                {config.supportedChainsArray &&
-                    config.supportedChainsArray.length > 0 &&
-                    config.supportedChainsArray.map((item, index) => (
-                        <div
-                            className={classes.chainDataRow}
-                            key={`NetworkRow_${index}`}
-                        >
-                            <TotalDepositWithDuration
-                                chainIds={[item.chainId]}
-                                days={1}
-                                title="24 hr Volume"
-                                showComparision={true}
-                            />
-                            <CumulativeDeposit
-                                title="Total Volume"
-                                chainIds={[item.chainId]}
-                            />
-                            <UniqueWalletCount
-                                title="Unique User Count"
-                                chainIds={[item.chainId]}
-                            />
-                        </div>
+            {config.supportedChainsArray &&
+            config.supportedChainsArray.length > 0 ? (
+                <Grid container spacing={1} className={classes.chainDataRow}>
+                    {config.supportedChainsArray.map((item, index) => (
+                        <>
+                            <Grid item xs={12} md={4}>
+                                <TotalDepositWithDuration
+                                    chainIds={[item.chainId]}
+                                    days={1}
+                                    title="24 hr Volume"
+                                    showComparision={true}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <CumulativeDeposit
+                                    title="Total Volume"
+                                    chainIds={[item.chainId]}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <UniqueWalletCount
+                                    title="Unique User Count"
+                                    chainIds={[item.chainId]}
+                                />
+                            </Grid>
+                        </>
                     ))}
-            </div>
-            <div className={classes.graphContainer}>
-                <div className={classes.graphComponentRow}>
+                </Grid>
+            ) : null}
+
+            <Grid container spacing={1} className={classes.graphComponentRow}>
+                <Grid item xs={12} lg={6}>
                     <DailyDepositGraph chainIds={supportedChainIds} days={15} />
+                </Grid>
+                <Grid item xs={12} lg={6}>
                     <FeeEarnedGraph chainIds={supportedChainIds} days={15} />
-                </div>
-                <div className={classes.graphComponentRow}>
-                    {config.supportedChainsArray &&
-                        config.supportedChainsArray.length > 0 &&
-                        config.supportedChainsArray.map((item, index) => (
+                </Grid>
+            </Grid>
+
+            {config.supportedChainsArray &&
+            config.supportedChainsArray.length > 0 ? (
+                <Grid
+                    container
+                    spacing={1}
+                    className={classes.graphComponentRow}
+                >
+                    {config.supportedChainsArray.map((item, index) => (
+                        <Grid item xs={12} md={4}>
                             <AvailableLiquidityGraph
                                 chainId={item.chainId}
                                 supportedTokenSymbols={["USDT", "USDC"]}
                                 key={`AL_${index}`}
                             />
-                        ))}
-                </div>
-                <div className={classes.graphComponentRow}>
-                    {config.supportedChainsArray &&
-                        config.supportedChainsArray.length > 0 &&
-                        config.supportedChainsArray.map((item, index) => (
+                        </Grid>
+                    ))}
+                </Grid>
+            ) : null}
+
+            {config.supportedChainsArray &&
+            config.supportedChainsArray.length > 0 ? (
+                <Grid
+                    container
+                    spacing={1}
+                    className={classes.graphComponentRow}
+                >
+                    {config.supportedChainsArray.map((item, index) => (
+                        <Grid item xs={12} md={4}>
                             <AvailableLiquidityGraph
                                 chainId={item.chainId}
                                 supportedTokenSymbols={["ETH"]}
                                 key={`AL_${index}`}
                             />
-                        ))}
-                </div>
-            </div>
-        </Container>
+                        </Grid>
+                    ))}
+                </Grid>
+            ) : null}
+        </>
     );
 }

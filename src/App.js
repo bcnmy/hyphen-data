@@ -1,20 +1,23 @@
 import "./App.css";
 import { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import HyphenIcon from "./assets/Hyphen_icon.png";
 import Header from "./components/Header";
 import Home from "./components/page/Home";
 import TransferDetails from "./components/page/TransferDetails";
 import { useSelector, useDispatch } from "react-redux";
 import { updateSearchState } from "./redux";
+import { Container } from "@material-ui/core";
 let { config } = require("./config");
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     root: {
-        margin: "0px",
-        fontFamily: "Roboto Mono!important",
+        fontFamily: "Roboto Mono",
+        padding: "0 40px 40px",
+        [theme.breakpoints.between("xs", "sm")]: {
+            padding: "0 24px 24px",
+        },
     },
-});
+}));
 
 function App() {
     const classes = useStyles();
@@ -51,10 +54,10 @@ function App() {
     }, [currentPage]);
 
     return (
-        <div className={classes.root}>
-            <Header title="Hyphen" logo={HyphenIcon} />
+        <Container maxWidth="xl" className={classes.root}>
+            <Header />
             {currentComponent}
-        </div>
+        </Container>
     );
 }
 
