@@ -31,9 +31,10 @@ config.chainLogoMap = {
     1: ethLogo,
     43114: avaxLogo
 }
-let ethereumColor = "#868EAC";
-let polygonColor = "#8247E5";
-let avalancheColor = "#E94646";
+
+const ethereumColor = "#868EAC";
+const polygonColor = "#8247E5";
+const avalancheColor = "#E94646";
 
 let MUMBAI = {
     name: "Mumbai",

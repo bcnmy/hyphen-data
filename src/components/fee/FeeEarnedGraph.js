@@ -1,48 +1,29 @@
 import { useEffect, useState } from "react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { useSelector } from "react-redux";
-import {
-    Chart,
-    BarSeries,
-    ArgumentAxis,
-    ValueAxis,
-    Legend,
-    Title,
-    Tooltip,
-} from "@devexpress/dx-react-chart-material-ui";
-import {
-    Animation,
-    EventTracker,
-    HoverState,
-} from "@devexpress/dx-react-chart";
-import { Stack } from "@devexpress/dx-react-chart";
 import { getDailyFee } from "../../service/fee";
 import { config } from "../../config";
-import NumericGraphLabel from "../basic/NumericGraphLabel";
 import { getStartAndEndTime } from "../../utils/getStartAndEndTime";
+import { StackedBarGraph } from "../graphs/StackedBarGraph";
 
 const useStyles = makeStyles({
     root: {
-        padding: "5px",
-        height: "310px!important",
-        border: "2px solid #615CCD",
-        borderRadius: "5px",
+        padding: "12px",
+        height: "340px",
+        border: "1px solid #dddddd",
+        borderRadius: "10px",
+    },
+    graphTitle: {
+        display: "inline-block",
+        textAlign: "left",
+        fontSize: "18px",
+        marginLeft: "32px",
+        marginBottom: "0",
     },
 });
 
-const styles = {
-    titleText: {
-        textAlign: "left",
-        padding: "0px 5px 10px 5px",
-        fontSize: "20px",
-    },
-};
-
-const TextComponent = withStyles(styles)(({ classes, ...restProps }) => (
-    <Title.Text {...restProps} className={classes.titleText} />
-));
-
 export default function FeeEarnedGraph({ chainIds, days = 30 }) {
+    const graphTitle = "Daily LP Fee (USD)";
     const classes = useStyles();
     const [dailyFee, setDailyFee] = useState([]);
     const [chainNames, setChainNames] = useState();
@@ -71,8 +52,12 @@ export default function FeeEarnedGraph({ chainIds, days = 30 }) {
                                 dateObject.getMonth() + 1
                             }`,
                             ...chainIds.reduce((acc, chainId) => {
-                                acc[`amount${chainId}`] =
-                                    dailyFeesMap[chainId][date];
+                                const chainName =
+                                    config.chainIdMap[chainId].name;
+                                acc[`${chainName}`] =
+                                    dailyFeesMap[chainId][date] || 0;
+                                acc[`${chainName}Color`] =
+                                    config.chainIdMap[chainId].color;
                                 return acc;
                             }, {}),
                         },
@@ -96,36 +81,15 @@ export default function FeeEarnedGraph({ chainIds, days = 30 }) {
 
     return (
         <div className={classes.root}>
-            {dailyFee && chainNames && dailyFee.length > 0 && (
-                <Chart data={dailyFee} height="300">
-                    <ArgumentAxis />
-                    <ValueAxis labelComponent={NumericGraphLabel} />
-
-                    {chainIds &&
-                        chainIds.map((chainId, index) => (
-                            <BarSeries
-                                valueField={`amount${chainId}`}
-                                argumentField="date"
-                                name={config.chainIdMap[chainId].name}
-                                key={`BarGraph_${index}`}
-                                barWidth="0.2"
-                                color={config.chainIdMap[chainId].color}
-                            />
-                        ))}
-
-                    <Stack stacks={[{ series: chainNames }]} />
-                    <Animation />
-                    <Legend verticalAlignment="bottom" />
-
-                    <Title
-                        text={`Daily LP Fee (USD)`}
-                        textComponent={TextComponent}
-                    />
-                    <EventTracker />
-                    <HoverState />
-                    <Tooltip />
-                </Chart>
-            )}
+            <h2 className={classes.graphTitle}>{graphTitle}</h2>
+            <StackedBarGraph
+                ariaLabel={graphTitle}
+                axisBottomName="Date"
+                axisLeftName="Fee"
+                data={dailyFee}
+                indexBy="date"
+                keys={chainNames}
+            />
         </div>
     );
 }

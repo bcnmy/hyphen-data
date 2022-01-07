@@ -1,52 +1,32 @@
 import { useEffect, useState } from "react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { config } from "../../config";
 import { useSelector } from "react-redux";
 import { getBalance, getLiquidityAdded } from "../../service/token";
-import {
-    Chart,
-    BarSeries,
-    ArgumentAxis,
-    ValueAxis,
-    Legend,
-    Title,
-    Tooltip,
-} from "@devexpress/dx-react-chart-material-ui";
-import {
-    Animation,
-    EventTracker,
-    HoverState,
-    Stack,
-} from "@devexpress/dx-react-chart";
-import NumericGraphLabel from "../basic/NumericGraphLabel";
+import { GroupedBarGraph } from "../graphs/GroupedBarGraph";
 
 const useStyles = makeStyles({
     root: {
-        padding: "5px",
-        height: "310px!important",
-        border: "2px solid #615CCD",
-        borderRadius: "5px",
+        padding: "12px",
+        height: "340px",
+        border: "1px solid #dddddd",
+        borderRadius: "10px",
+    },
+    graphTitle: {
+        display: "inline-block",
+        textAlign: "left",
+        fontSize: "18px",
+        marginLeft: "32px",
+        marginBottom: "0",
     },
 });
-
-const styles = {
-    titleText: {
-        textAlign: "left",
-        padding: "0px 5px 10px 5px",
-        fontSize: "20px",
-    },
-};
-
-const TextComponent = withStyles(styles)(({ classes, ...restProps }) => (
-    <Title.Text {...restProps} className={classes.titleText} />
-));
 
 export default function AvailableLiquidityGraph({
     chainId,
     supportedTokenSymbols,
 }) {
+    const graphTitle = `Available Liquidity (${config.chainIdMap[chainId].name})`;
     const classes = useStyles();
-
     const [error, setError] = useState();
     const [liquidityData, setLiquidityData] = useState([]);
 
@@ -79,9 +59,11 @@ export default function AvailableLiquidityGraph({
                         if (tokenBalance) {
                             liquidityData.push({
                                 supportedTokenSymbol,
-                                liquidity: Number.parseFloat(tokenBalance),
-                                totalLiquidity:
-                                    Number.parseFloat(liquidityAdded),
+                                Available: Number.parseFloat(tokenBalance),
+                                AvailableColor:
+                                    config.chainIdMap[chainId].color,
+                                Total: Number.parseFloat(liquidityAdded),
+                                TotalColor: "#ff7043",
                             });
                         }
                     } else {
@@ -106,38 +88,15 @@ export default function AvailableLiquidityGraph({
 
     return (
         <div className={classes.root}>
-            {liquidityData && liquidityData.length > 0 && (
-                <Chart data={liquidityData} height="300">
-                    <ArgumentAxis />
-                    <ValueAxis labelComponent={NumericGraphLabel} />
-
-                    <BarSeries
-                        valueField="liquidity"
-                        argumentField="supportedTokenSymbol"
-                        name="Available"
-                        color={config.chainIdMap[chainId].color}
-                    />
-                    <BarSeries
-                        valueField="totalLiquidity"
-                        argumentField="supportedTokenSymbol"
-                        name="Total"
-                    />
-                    <Legend verticalAlignment="bottom" />
-
-                    <Stack />
-                    <Animation />
-                    <Title
-                        text={`Available Liquidity (${config.chainIdMap[chainId].name})`}
-                        textComponent={TextComponent}
-                    />
-                    <EventTracker />
-                    <HoverState />
-                    <Tooltip />
-                </Chart>
-            )}
-            {(!liquidityData || liquidityData.length === 0) && (
-                <div>{error}</div>
-            )}
+            <h2 className={classes.graphTitle}>{graphTitle}</h2>
+            <GroupedBarGraph
+                ariaLabel={graphTitle}
+                axisBottomName="Token"
+                axisLeftName="Liquidity"
+                data={liquidityData}
+                indexBy="supportedTokenSymbol"
+                keys={["Available", "Total"]}
+            />
         </div>
     );
 }
