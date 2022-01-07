@@ -18,7 +18,7 @@ function StackedBarGraph({
             valueScale={{ type: "linear" }}
             indexScale={{ type: "band", round: true }}
             valueFormat=" >-$d"
-            colors={{ scheme: "nivo" }}
+            colors={({ id, data }) => data[`${id}Color`]}
             borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
             height={288}
             axisTop={null}

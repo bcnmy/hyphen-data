@@ -8,8 +8,6 @@ function GroupedBarGraph({
     indexBy,
     keys,
 }) {
-    console.log({ data, keys });
-
     return data.length > 0 && keys.length > 0 ? (
         <ResponsiveBar
             data={data}
@@ -21,7 +19,7 @@ function GroupedBarGraph({
             valueScale={{ type: "linear" }}
             indexScale={{ type: "band", round: true }}
             valueFormat=" >-d"
-            colors={{ scheme: "nivo" }}
+            colors={({ id, data }) => data[`${id}Color`]}
             borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
             height={288}
             axisTop={null}

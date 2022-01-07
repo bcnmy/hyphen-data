@@ -52,8 +52,12 @@ export default function FeeEarnedGraph({ chainIds, days = 30 }) {
                                 dateObject.getMonth() + 1
                             }`,
                             ...chainIds.reduce((acc, chainId) => {
-                                acc[`${config.chainIdMap[chainId].name}`] =
+                                const chainName =
+                                    config.chainIdMap[chainId].name;
+                                acc[`${chainName}`] =
                                     dailyFeesMap[chainId][date] || 0;
+                                acc[`${chainName}Color`] =
+                                    config.chainIdMap[chainId].color;
                                 return acc;
                             }, {}),
                         },
