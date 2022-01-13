@@ -8,7 +8,7 @@ import { Box } from "@material-ui/core";
 const useStyles = makeStyles({
     container: {
         height: "auto",
-        minHeight: "185px",
+        minHeight: "184px",
         display: "flex",
         flexDirection: "column",
         borderRadius: "10px",

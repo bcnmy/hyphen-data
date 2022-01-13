@@ -41,7 +41,7 @@ export default function Home(props) {
     return (
         <>
             <Grid container spacing={1} className={classes.cumulativeDataRow}>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} lg={3}>
                     <TotalDepositWithDuration
                         chainIds={supportedChainIds}
                         days={1}
@@ -51,21 +51,21 @@ export default function Home(props) {
                         style={durationStyle}
                     />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} lg={3}>
                     <CumulativeDeposit
                         title="Total Volume"
                         chainIds={supportedChainIds}
                         style={durationStyle}
                     />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} lg={3}>
                     <UniqueWalletCount
                         title="Unique User Count"
                         chainIds={supportedChainIds}
                         style={durationStyle}
                     />
                 </Grid>
-                <Grid item xs={12} md={12}>
+                <Grid item xs={12} lg={3}>
                     <AverageTransferTime
                         style={durationStyle}
                         fromChainId={supportedChainIds[0]}
