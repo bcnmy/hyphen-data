@@ -29,6 +29,11 @@ const useStyles = makeStyles((theme) => ({
   swapIcon: {
     margin: "0px 10px",
   },
+  chainImage: {
+    width: "18px",
+    height: "18px",
+    marginRight: "8px",
+  },
   chainName: {
     height: "40px",
     width: "100%",
@@ -195,10 +200,15 @@ export default function AverageTransferTime(props) {
                 }}
               >
                 {sourceChains.map((item, index) => {
-                  console.log(item);
-
+                  const { chainId } = item;
+                  const chainImage = config.chainLogoMapPng[chainId];
                   return (
                     <MenuItem value={item.chainId} key={`ChainItem_${index}`}>
+                      <img
+                        className={classes.chainImage}
+                        src={chainImage}
+                        alt="item.name"
+                      />
                       {item.name}
                     </MenuItem>
                   );
@@ -234,8 +244,15 @@ export default function AverageTransferTime(props) {
                 }}
               >
                 {destinationChains.map((item, index) => {
+                  const { chainId } = item;
+                  const chainImage = config.chainLogoMapPng[chainId];
                   return (
                     <MenuItem value={item.chainId} key={`ChainItem_${index}`}>
+                      <img
+                        className={classes.chainImage}
+                        src={chainImage}
+                        alt="item.name"
+                      />
                       {item.name}
                     </MenuItem>
                   );
