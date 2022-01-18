@@ -51,7 +51,7 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "row",
     border: "1px solid #D5DAE2",
-    borderRadius: "5px",
+    borderRadius: "8px",
     width: "600px",
     height: "40px"
   },

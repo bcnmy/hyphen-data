@@ -14,6 +14,9 @@ const useStyles = makeStyles((theme) => ({
             marginBottom: "8px",
         },
     },
+    select: {
+        borderRadius: "8px",
+    },
     selectEmpty: {
         marginTop: theme.spacing(2),
     },
@@ -37,6 +40,7 @@ export default function VersionSwitch() {
             size="small"
         >
             <Select
+                className={classes.select}
                 value={version}
                 onChange={handleChange}
                 inputProps={{

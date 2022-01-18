@@ -8,7 +8,7 @@ import { GroupedBarGraph } from "../graphs/GroupedBarGraph";
 const useStyles = makeStyles({
     root: {
         padding: "12px",
-        height: "340px",
+        height: "354px",
         border: "1px solid #dddddd",
         borderRadius: "10px",
     },

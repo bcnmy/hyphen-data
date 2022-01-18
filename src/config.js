@@ -1,6 +1,9 @@
 import maticLogo from "./assets/matic-logo.svg";
+import maticLogoPng from "./assets/matic-logo-png.png";
 import avaxLogo from "./assets/avax-logo.svg";
+import avaxLogoPng from "./assets/avax-logo-png.png";
 import ethLogo from "./assets/eth-logo.svg";
+import ethLogoPng from "./assets/eth-logo-png.png";
 import usdcLogo from "./assets/usdc.png";
 import usdtLogo from "./assets/usdt.png";
 import daiLogo from "./assets/dai.png";
@@ -30,6 +33,14 @@ config.chainLogoMap = {
     137: maticLogo,
     1: ethLogo,
     43114: avaxLogo
+}
+
+config.chainLogoMapPng = {
+    80001: maticLogoPng,
+    5: ethLogoPng,
+    137: maticLogoPng,
+    1: ethLogoPng,
+    43114: avaxLogoPng
 }
 
 const ethereumColor = "#868EAC";
