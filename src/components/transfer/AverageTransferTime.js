@@ -120,14 +120,16 @@ export default function AverageTransferTime(props) {
             fetchAverageTransferTime(
                 selectedFromChain.chainId,
                 selectedToChain.chainId,
-                30
+                1
             );
         }
     }, [selectedFromChain, selectedToChain]);
 
     useEffect(() => {
         if (averageTimeArray && averageTimeArray.length > 0) {
+            console.log(averageTimeArray);
             let q90 = quantile(averageTimeArray, 0.9);
+            console.log(q90);
             setAverageTime(ms(q90));
         }
     }, [averageTimeArray]);
@@ -145,6 +147,7 @@ export default function AverageTransferTime(props) {
             version,
             numOfTransactions
         );
+        console.log(depositTransactions)
         if (depositTransactions && depositTransactions.length > 0) {
             for (let index = 0; index < depositTransactions.length; index++) {
                 (async (depositTransaction) => {
@@ -154,9 +157,12 @@ export default function AverageTransferTime(props) {
                         depositTransaction.id,
                         version
                     );
+                    console.log(transferData);
                     if (transferData) {
                         let endTime = parseInt(transferData.timestamp);
                         let timeDiff = parseInt(endTime - startTime) * 1000;
+
+                        console.log(timeDiff);
 
                         setAverageTimeArray((oldArray) => [
                             ...oldArray,
@@ -283,7 +289,7 @@ export default function AverageTransferTime(props) {
     return (
         <div className={classes.root}>
             <Counter
-                title="Average Transfer Time"
+                title="Last Transaction Time"
                 label={label}
                 {...props}
                 labelContainerStyle={{
