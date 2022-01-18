@@ -128,7 +128,7 @@ export default function AverageTransferTime(props) {
     useEffect(() => {
         if (averageTimeArray && averageTimeArray.length > 0) {
             let q90 = quantile(averageTimeArray, 0.9);
-            setAverageTime(ms(q90));
+            setAverageTime(ms(q90, {long: true}));
         }
     }, [averageTimeArray]);
 
