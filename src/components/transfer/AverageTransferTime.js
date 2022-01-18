@@ -9,14 +9,12 @@ import { config } from "../../config";
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
-import SwapHorizIcon from "@material-ui/icons/SwapHoriz";
-import leftArrow from "../../assets/left-arrow.svg";
 import rightArrow from "../../assets/right-arrow.svg";
 import { Box, Grid } from "@material-ui/core";
 
 const ms = require("ms");
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     root: {},
     logoIcon: {
         width: "24px",
@@ -31,15 +29,37 @@ const useStyles = makeStyles({
     swapIcon: {
         margin: "0px 10px",
     },
+    chainImage: {
+        width: "18px",
+        height: "18px",
+        marginRight: "8px",
+    },
     chainName: {
-        height: "48px",
+        height: "40px",
         width: "100%",
         display: "flex",
         alignItems: "center",
         margin: "0 auto",
-        padding: "0px 5px",
+        borderRadius: "8px",
+        fontSize: "14px",
     },
-});
+    averageTime: {
+        fontSize: "20px",
+        lineHeight: "20px",
+        marginTop: "8px",
+    },
+    transferArrow: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    transferArrowImg: {
+        transform: "rotate(90deg)",
+        [theme.breakpoints.up("lg")]: {
+            transform: "rotate(0deg)",
+        },
+    },
+}));
 
 export default function AverageTransferTime(props) {
     const classes = useStyles();
@@ -100,7 +120,7 @@ export default function AverageTransferTime(props) {
             fetchAverageTransferTime(
                 selectedFromChain.chainId,
                 selectedToChain.chainId,
-                30
+                1
             );
         }
     }, [selectedFromChain, selectedToChain]);
@@ -163,102 +183,116 @@ export default function AverageTransferTime(props) {
     };
 
     let label = (
-        <Grid
-            container
-            spacing={2}
-            className={classes.chainInfoContainer}
-            alignItems="center"
-        >
-            <Grid item xs={12} lg={4}>
-                {sourceChains && selectedFromChain && (
-                    <FormControl
-                        variant="outlined"
-                        className={classes.chainName}
-                        size="small"
-                    >
-                        <Select
+        <>
+            <span className={classes.averageTime}>{averageTime}</span>
+            <Grid
+                container
+                spacing={2}
+                className={classes.chainInfoContainer}
+                alignItems="center"
+            >
+                <Grid item xs={12} lg={5}>
+                    {sourceChains && selectedFromChain && (
+                        <FormControl
+                            variant="outlined"
                             className={classes.chainName}
-                            value={selectedFromChain.chainId}
-                            onChange={onFromChainChanged}
-                            inputProps={{
-                                name: "version",
-                                id: "simple-select-outlined",
-                            }}
+                            size="small"
                         >
-                            {sourceChains.map((item, index) => {
-                                return (
-                                    <MenuItem
-                                        value={item.chainId}
-                                        key={`ChainItem_${index}`}
-                                    >
-                                        {item.name}
-                                    </MenuItem>
-                                );
-                            })}
-                        </Select>
-                    </FormControl>
-                )}
-            </Grid>
+                            <Select
+                                className={classes.chainName}
+                                value={selectedFromChain.chainId}
+                                onChange={onFromChainChanged}
+                                inputProps={{
+                                    name: "version",
+                                    id: "simple-select-outlined",
+                                }}
+                            >
+                                {sourceChains.map((item, index) => {
+                                    const { chainId } = item;
+                                    const chainImage =
+                                        config.chainLogoMapPng[chainId];
+                                    return (
+                                        <MenuItem
+                                            value={item.chainId}
+                                            key={`ChainItem_${index}`}
+                                        >
+                                            <img
+                                                className={classes.chainImage}
+                                                src={chainImage}
+                                                alt="item.name"
+                                            />
+                                            {item.name}
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
+                        </FormControl>
+                    )}
+                </Grid>
 
-            <Grid item xs={12} lg={4}>
-                <Box
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-around",
-                    }}
-                >
-                    <Box
-                        component="img"
-                        src={leftArrow}
-                        alt="From chain"
-                        sx={{ display: { xs: "none", md: "block" } }}
-                    />
-                    <div>{averageTime}</div>
+                <Grid item xs={12} lg={2} className={classes.transferArrow}>
                     <Box
                         component="img"
                         src={rightArrow}
-                        alt="To chain"
-                        sx={{ display: { xs: "none", md: "block" } }}
+                        alt="transfer-arrow"
+                        className={classes.transferArrowImg}
                     />
-                </Box>
-            </Grid>
+                </Grid>
 
-            <Grid item xs={12} lg={4}>
-                {destinationChains && selectedToChain && (
-                    <FormControl
-                        variant="outlined"
-                        className={classes.chainName}
-                        size="small"
-                    >
-                        <Select
+                <Grid item xs={12} lg={5}>
+                    {destinationChains && selectedToChain && (
+                        <FormControl
+                            variant="outlined"
                             className={classes.chainName}
-                            value={selectedToChain.chainId}
-                            onChange={onToChainChanged}
-                            inputProps={{
-                                name: "version",
-                                id: "simple-select-outlined",
-                            }}
+                            size="small"
                         >
-                            {destinationChains.map((item, index) => {
-                                return (
-                                    <MenuItem
-                                        value={item.chainId}
-                                        key={`ChainItem_${index}`}
-                                    >
-                                        {item.name}
-                                    </MenuItem>
-                                );
-                            })}
-                        </Select>
-                    </FormControl>
-                )}
+                            <Select
+                                className={classes.chainName}
+                                value={selectedToChain.chainId}
+                                onChange={onToChainChanged}
+                                inputProps={{
+                                    name: "version",
+                                    id: "simple-select-outlined",
+                                }}
+                            >
+                                {destinationChains.map((item, index) => {
+                                    const { chainId } = item;
+                                    const chainImage =
+                                        config.chainLogoMapPng[chainId];
+                                    return (
+                                        <MenuItem
+                                            value={item.chainId}
+                                            key={`ChainItem_${index}`}
+                                        >
+                                            <img
+                                                className={classes.chainImage}
+                                                src={chainImage}
+                                                alt="item.name"
+                                            />
+                                            {item.name}
+                                        </MenuItem>
+                                    );
+                                })}
+                            </Select>
+                        </FormControl>
+                    )}
+                </Grid>
             </Grid>
-        </Grid>
+        </>
     );
     return (
         <div className={classes.root}>
-            <Counter title="Average Transfer Time" label={label} {...props} />
+            <Counter
+                title="Last Transaction Time"
+                label={label}
+                {...props}
+                labelContainerStyle={{
+                    fontSize: "20px",
+                    lineHeight: "20px",
+                    marginTop: "8px",
+                    marginBottom: "0",
+                }}
+            />
         </div>
     );
 }

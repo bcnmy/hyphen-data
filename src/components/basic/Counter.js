@@ -8,7 +8,7 @@ import { Box } from "@material-ui/core";
 const useStyles = makeStyles({
     container: {
         height: "auto",
-        minHeight: "185px",
+        minHeight: "184px",
         display: "flex",
         flexDirection: "column",
         borderRadius: "10px",
@@ -42,6 +42,7 @@ const useStyles = makeStyles({
     headerChainImage: {
         height: "28px",
         width: "auto",
+        backgroundColor: "rgba(97, 92, 205, 0.1)",
     },
     headerChainName: {
         fontSize: "10px",
