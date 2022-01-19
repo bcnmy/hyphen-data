@@ -38,7 +38,7 @@ function App() {
                 })
             );
         }
-    }, []);
+    }, [dispatch]);
 
     useEffect(() => {
         if (currentPage) {
@@ -48,6 +48,9 @@ function App() {
                     break;
                 case config.PAGE.TRANSFER_DETAILS:
                     setCurrentComponent(<TransferDetails />);
+                    break;
+                default:
+                    setCurrentComponent(<Home />);
                     break;
             }
         }
