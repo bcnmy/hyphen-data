@@ -12,7 +12,7 @@ const useStyles = makeStyles({
         display: "flex",
         flexDirection: "column",
         borderRadius: "10px",
-        padding: "30px",
+        padding: "16px",
         color: "#fff",
     },
     ethBg: {

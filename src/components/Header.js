@@ -8,7 +8,7 @@ import hyphenLogo from "../assets/hyphen-logo.svg";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        padding: "40px 0 12px",
+        padding: "20px 0 12px",
         position: "sticky",
         top: "0px",
         backgroundColor: "#ffffff",
