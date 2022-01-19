@@ -12,7 +12,7 @@ const useStyles = makeStyles({
         display: "flex",
         flexDirection: "column",
         borderRadius: "10px",
-        padding: "16px",
+        padding: "24px 16px 24px 16px",
         color: "#fff",
     },
     ethBg: {
@@ -50,7 +50,7 @@ const useStyles = makeStyles({
     },
     valueRow: {
         marginBottom: "8px",
-        fontSize: "36px",
+        fontSize: "32px",
         fontWeight: "500",
     },
     percentageChangeArrow: {
