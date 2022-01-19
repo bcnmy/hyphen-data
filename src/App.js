@@ -12,7 +12,7 @@ let { config } = require("./config");
 const useStyles = makeStyles((theme) => ({
     root: {
         fontFamily: "Roboto Mono",
-        padding: "0 40px 40px",
+        padding: "0 20px 20px",
         [theme.breakpoints.between("xs", "sm")]: {
             padding: "0 24px 24px",
         },
@@ -38,7 +38,7 @@ function App() {
                 })
             );
         }
-    }, []);
+    }, [dispatch]);
 
     useEffect(() => {
         if (currentPage) {
@@ -48,6 +48,9 @@ function App() {
                     break;
                 case config.PAGE.TRANSFER_DETAILS:
                     setCurrentComponent(<TransferDetails />);
+                    break;
+                default:
+                    setCurrentComponent(<Home />);
                     break;
             }
         }

@@ -12,7 +12,7 @@ const useStyles = makeStyles({
         display: "flex",
         flexDirection: "column",
         borderRadius: "10px",
-        padding: "30px",
+        padding: "24px 16px 24px 16px",
         color: "#fff",
     },
     ethBg: {
@@ -50,11 +50,13 @@ const useStyles = makeStyles({
     },
     valueRow: {
         marginBottom: "8px",
-        fontSize: "36px",
+        fontSize: "32px",
         fontWeight: "500",
     },
     percentageChangeArrow: {
-        marginRight: "4px",
+        height: "14px",
+        width: "auto",
+        marginRight: "6px",
     },
     percentageChangeText: {
         fontSize: "18px",
@@ -85,7 +87,7 @@ function PositivePercentageChange({ percentageChange }) {
     const classes = useStyles();
 
     return (
-        <Box sx={{ display: "flex", alignContent: "center" }}>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
             <img
                 alt="Positive change"
                 className={classes.percentageChangeArrow}
@@ -107,7 +109,7 @@ function NegativePercentageChange({ percentageChange }) {
     const classes = useStyles();
 
     return (
-        <Box sx={{ display: "flex", alignContent: "center" }}>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
             <img
                 alt="Negative change"
                 className={classes.percentageChangeArrow}
