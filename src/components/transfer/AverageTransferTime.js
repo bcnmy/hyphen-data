@@ -30,18 +30,19 @@ const useStyles = makeStyles((theme) => ({
         margin: "0px 10px",
     },
     chainImage: {
-        width: "18px",
-        height: "18px",
-        marginRight: "8px",
+        width: "auto",
+        height: "16px",
+        marginRight: "6px",
     },
     chainName: {
         height: "40px",
         width: "100%",
         display: "flex",
         alignItems: "center",
+        padding: "0",
         margin: "0 auto",
         borderRadius: "8px",
-        fontSize: "14px",
+        fontSize: "13px",
     },
     averageTime: {
         fontSize: "20px",
@@ -191,7 +192,7 @@ export default function AverageTransferTime(props) {
                 className={classes.chainInfoContainer}
                 alignItems="center"
             >
-                <Grid item xs={12} lg={5}>
+                <Grid item xs={12} lg={5} style={{padding: "0 0 0 6px"}}>
                     {sourceChains && selectedFromChain && (
                         <FormControl
                             variant="outlined"
@@ -239,7 +240,7 @@ export default function AverageTransferTime(props) {
                     />
                 </Grid>
 
-                <Grid item xs={12} lg={5}>
+                <Grid item xs={12} lg={5} style={{padding: "0 6px 0 0"}}>
                     {destinationChains && selectedToChain && (
                         <FormControl
                             variant="outlined"
