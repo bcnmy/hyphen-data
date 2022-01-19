@@ -54,7 +54,9 @@ const useStyles = makeStyles({
         fontWeight: "500",
     },
     percentageChangeArrow: {
-        marginRight: "4px",
+        height: "14px",
+        width: "auto",
+        marginRight: "6px",
     },
     percentageChangeText: {
         fontSize: "18px",
@@ -85,7 +87,7 @@ function PositivePercentageChange({ percentageChange }) {
     const classes = useStyles();
 
     return (
-        <Box sx={{ display: "flex", alignContent: "center" }}>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
             <img
                 alt="Positive change"
                 className={classes.percentageChangeArrow}
@@ -107,7 +109,7 @@ function NegativePercentageChange({ percentageChange }) {
     const classes = useStyles();
 
     return (
-        <Box sx={{ display: "flex", alignContent: "center" }}>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
             <img
                 alt="Negative change"
                 className={classes.percentageChangeArrow}
