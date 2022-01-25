@@ -1,10 +1,12 @@
-import PolygonLogo from "./assets/polygon-matic-logo.png";
-import AvalancheLogo from "./assets/avalanche-logo.png";
-import EthereumLogo from "./assets/Ethereum.png";
-import USDCLogo from "./assets/usdc.png";
-import USDTLogo from "./assets/usdt.png";
-import DAILogo from "./assets/dai.png";
-import ETHLogo from "./assets/Ethereum.png";
+import maticLogo from "./assets/matic-logo.svg";
+import maticLogoPng from "./assets/matic-logo-png.png";
+import avaxLogo from "./assets/avax-logo.svg";
+import avaxLogoPng from "./assets/avax-logo-png.png";
+import ethLogo from "./assets/eth-logo.svg";
+import ethLogoPng from "./assets/eth-logo-png.png";
+import usdcLogo from "./assets/usdc.png";
+import usdtLogo from "./assets/usdt.png";
+import daiLogo from "./assets/dai.png";
 
 const abiDecoder = require('abi-decoder');
 
@@ -19,24 +21,33 @@ var config = {};
 config.counterFormat = '$ 0,0';
 config.getEnv = getEnv;
 config.tokenLogoMap = {
-    "USDC": USDCLogo,
-    "USDT": USDTLogo,
-    "DAI": DAILogo,
-    "ETH": ETHLogo
+    "USDC": usdcLogo,
+    "USDT": usdtLogo,
+    "DAI": daiLogo,
+    "ETH": ethLogo
 }
 
 config.chainLogoMap = {
-    80001: PolygonLogo,
-    5: EthereumLogo,
-    137: PolygonLogo,
-    1: EthereumLogo,
-    43114: AvalancheLogo
+    80001: maticLogo,
+    5: ethLogo,
+    137: maticLogo,
+    1: ethLogo,
+    43114: avaxLogo
 }
-let ethereumColor = "#868EAC";
-let polygonColor = "#8247E5";
-let avalancheColor = "#E94646";
 
-let MUMBAI = { 
+config.chainLogoMapPng = {
+    80001: maticLogoPng,
+    5: ethLogoPng,
+    137: maticLogoPng,
+    1: ethLogoPng,
+    43114: avaxLogoPng
+}
+
+const ethereumColor = "#868EAC";
+const polygonColor = "#8247E5";
+const avalancheColor = "#E94646";
+
+let MUMBAI = {
     name: "Mumbai",
     subText: "Polygon testnet",
     chainId: 80001,
@@ -54,7 +65,7 @@ let MUMBAI = {
         v2: "0x65d8bf5a792ad32ee884f77301e8d6b11fbb21b3"
     }
 }
-let ETHEREUM = { 
+let ETHEREUM = {
     name: "Ethereum",
     subText: "Ethereum Mainnet",
     chainId: 1,
@@ -72,7 +83,7 @@ let ETHEREUM = {
         v2: "0xf78765bd14b4e8527d9e4e5c5a5c11a44ad12f47"
     }
 }
-let MATIC = { 
+let MATIC = {
     name: "Polygon",
     subText: "Polygon Mainnet",
     chainId: 137,
@@ -90,7 +101,7 @@ let MATIC = {
         v2: "0xf78765bd14b4e8527d9e4e5c5a5c11a44ad12f47"
     }
 }
-let GOERLI = { 
+let GOERLI = {
     name: "Goerli",
     subText: "Ethereum testnet",
     chainId: 5,
@@ -109,7 +120,7 @@ let GOERLI = {
     }
 }
 
-let AVA = { 
+let AVA = {
     name: "Avalanche",
     subText: "Avalanche mainnet",
     chainId: 43114,
@@ -140,13 +151,13 @@ if(process.env.REACT_APP_ENV === TEST_ENVIRONMENT) {
 config.chains = chains;
 config.chainIdMap = {};
 
-let supportedChainArrray = Object.values(chains);
-config.supportedChainArrray = supportedChainArrray;
+let supportedChainsArray = Object.values(chains);
+config.supportedChainsArray = supportedChainsArray;
 
 config.supportedTokenSymbols = ["USDC","USDT","ETH"];
 
-for(let index = 0; index < supportedChainArrray.length; index++) {
-    let currentChain = supportedChainArrray[index];
+for(let index = 0; index < supportedChainsArray.length; index++) {
+    let currentChain = supportedChainsArray[index];
     config.chainIdMap[currentChain.chainId] = currentChain;
 }
 
