@@ -24,7 +24,7 @@ config.tokenLogoMap = {
     "USDC": usdcLogo,
     "USDT": usdtLogo,
     "DAI": daiLogo,
-    "ETH": ethLogo
+    "ETH": ethLogo,
 }
 
 config.chainLogoMap = {
@@ -285,7 +285,32 @@ config.tokensMap = {
             fixedDecimalPoint: 5
         }
     },
-
+    "BICO" : {
+        80001: {
+            address: "0xac42d8319ce458b22a72b45f58c0dcfeee824691",
+            transferOverhead: 121335,
+            decimal: 18,
+            symbol: "BICO"
+        },
+        5: {
+            address: "0xDdc47b0cA071682e8dc373391aCA18dA0Fe28699",
+            transferOverhead: 121335,
+            decimal: 18,
+            symbol: "BICO"
+        },
+        137: {
+            address: "0x91c89A94567980f0e9723b487b0beD586eE96aa7",
+            transferOverhead: 121335,
+            decimal: 18,
+            symbol: "BICO"
+        },
+        1: {
+            address: "0xf17e65822b568b3903685a7c9f496cf7656cc6c2",
+            transferOverhead: 121335,
+            decimal: 18,
+            symbol: "BICO"
+        },
+    },
 }
 
 config.tokenAddressMap = {
@@ -312,6 +337,10 @@ config.tokenAddressMap = {
     "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619" : {137 : config.tokensMap["ETH"][137]},
     "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab" : {43114: config.tokensMap["ETH"][43114]},
 
+    "0xddc47b0ca071682e8dc373391aca18da0fe28699" : {5 : config.tokensMap["BICO"][5]},
+    "0xac42d8319ce458b22a72b45f58c0dcfeee824691" : {80001 : config.tokensMap["BICO"][80001]},
+    "0xf17e65822b568b3903685a7c9f496cf7656cc6c2" : {1 : config.tokensMap["BICO"][1]},
+    "0x91c89a94567980f0e9723b487b0bed586ee96aa7" : {137 : config.tokensMap["BICO"][137]},
 }
 
 config.explorerURLMap = {
