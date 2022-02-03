@@ -124,7 +124,7 @@ export default function Home(props) {
                         <Grid item xs={12} md={4}>
                             <AvailableLiquidityGraph
                                 chainId={item.chainId}
-                                supportedTokenSymbols={["USDT", "USDC"]}
+                                supportedTokenSymbols={["USDT", "USDC", "BICO"]}
                                 key={`AL_${index}`}
                             />
                         </Grid>
