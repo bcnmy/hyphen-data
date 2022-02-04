@@ -62,8 +62,8 @@ export default function AvailableLiquidityGraph({
                                 Available: Number.parseFloat(tokenBalance),
                                 AvailableColor:
                                     config.chainIdMap[chainId].color,
-                                Total: Number.parseFloat(liquidityAdded),
-                                TotalColor: "#ff7043",
+                                Supplied: Number.parseFloat(liquidityAdded),
+                                SuppliedColor: "#ff7043",
                             });
                         }
                     } else {
@@ -95,7 +95,7 @@ export default function AvailableLiquidityGraph({
                 axisLeftName="Liquidity"
                 data={liquidityData}
                 indexBy="supportedTokenSymbol"
-                keys={["Available", "Total"]}
+                keys={["Available", "Supplied"]}
             />
         </div>
     );
