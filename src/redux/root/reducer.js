@@ -4,7 +4,7 @@ import { config } from "../../config";
 
 const initialState = {
     currentPage: config.PAGE.HOME,
-    version: "v2",
+    version: "v1.1",
 };
 
 const reducer = (state = initialState, action) => {

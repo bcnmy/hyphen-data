@@ -57,12 +57,12 @@ let MUMBAI = {
     assetSentTopicId: "0xec1dcc5633614eade4a5730f51adc7444a5103a8477965a32f2e886f5b20f694",
     graphURL : {
         v1: "https://api.thegraph.com/subgraphs/name/divyan73/lpmanagermumbai",
-        v2: "https://api.thegraph.com/subgraphs/name/divyan73/lpmanagermumbai"
+        'v1.1': "https://api.thegraph.com/subgraphs/name/divyan73/lpmanagermumbai"
     },
     color: polygonColor,
     LPManagerAddress: {
         v1: "0x65d8bf5a792ad32ee884f77301e8d6b11fbb21b3",
-        v2: "0x65d8bf5a792ad32ee884f77301e8d6b11fbb21b3"
+        'v1.1': "0x65d8bf5a792ad32ee884f77301e8d6b11fbb21b3"
     }
 }
 let ETHEREUM = {
@@ -75,12 +75,12 @@ let ETHEREUM = {
     assetSentTopicId: "0xec1dcc5633614eade4a5730f51adc7444a5103a8477965a32f2e886f5b20f694",
     graphURL : {
         v1: "https://api.thegraph.com/subgraphs/name/divyan73/hyphen-ethereum",
-        v2: "https://api.thegraph.com/subgraphs/name/divyan73/hyphenethereumv2"
+        'v1.1': "https://api.thegraph.com/subgraphs/name/divyan73/hyphenethereumv2"
     },
     color: ethereumColor,
     LPManagerAddress: {
         v1: "0x246f48bf00427d9abb3d44caa709b1a90377ed90",
-        v2: "0xf78765bd14b4e8527d9e4e5c5a5c11a44ad12f47"
+        'v1.1': "0xf78765bd14b4e8527d9e4e5c5a5c11a44ad12f47"
     }
 }
 let MATIC = {
@@ -93,12 +93,12 @@ let MATIC = {
     assetSentTopicId: "0xec1dcc5633614eade4a5730f51adc7444a5103a8477965a32f2e886f5b20f694",
     graphURL : {
         v1: "https://api.thegraph.com/subgraphs/name/divyan73/hyphenpolygon",
-        v2: "https://api.thegraph.com/subgraphs/name/divyan73/hyphenpolygonv2"
+        'v1.1': "https://api.thegraph.com/subgraphs/name/divyan73/hyphenpolygonv2"
     },
     color: polygonColor,
     LPManagerAddress: {
         v1: "0x246f48bf00427d9abb3d44caa709b1a90377ed90",
-        v2: "0xf78765bd14b4e8527d9e4e5c5a5c11a44ad12f47"
+        'v1.1': "0xf78765bd14b4e8527d9e4e5c5a5c11a44ad12f47"
     }
 }
 let GOERLI = {
@@ -111,12 +111,12 @@ let GOERLI = {
     assetSentTopicId: "0xec1dcc5633614eade4a5730f51adc7444a5103a8477965a32f2e886f5b20f694",
     graphURL : {
        v1: "https://api.thegraph.com/subgraphs/name/divyan73/lpmanagergoerli",
-       v2: "https://api.thegraph.com/subgraphs/name/divyan73/lpmanagergoerli"
+       'v1.1': "https://api.thegraph.com/subgraphs/name/divyan73/lpmanagergoerli"
     },
     color: ethereumColor,
     LPManagerAddress: {
         v1: "0x67e040c687e8a5b6e6b57988284ebc77c905a61c",
-        v2: "0x67e040c687e8a5b6e6b57988284ebc77c905a61c"
+        'v1.1': "0x67e040c687e8a5b6e6b57988284ebc77c905a61c"
     }
 }
 
@@ -129,12 +129,12 @@ let AVA = {
     assetSentTopicId: "0xec1dcc5633614eade4a5730f51adc7444a5103a8477965a32f2e886f5b20f694",
     graphURL : {
         v1: "",
-        v2: "https://api.thegraph.com/subgraphs/name/divyan73/hyphen-avalanche"
+        'v1.1': "https://api.thegraph.com/subgraphs/name/divyan73/hyphen-avalanche"
     },
     color: avalancheColor,
     LPManagerAddress: {
         v1: "",
-        v2: "0xf78765bd14b4e8527d9e4e5c5a5c11a44ad12f47"
+        'v1.1': "0xf78765bd14b4e8527d9e4e5c5a5c11a44ad12f47"
     }
 };
 

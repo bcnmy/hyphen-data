@@ -49,7 +49,7 @@ function getTotalDepositPerNetwork(chainId, version) {
                   id
                   amount
                 }
-            }` 
+            }`
             let data = await executeQuery(chainId, query, version);
             if(data && data.data && data.data.depositAggregatedDatas) {
                 let aggregateData = data.data.depositAggregatedDatas;
@@ -99,7 +99,7 @@ function getTotalDepositWithDuration(chainId, startTime, endTime, version) {
                     let depositData = data.data.fundsDepositeds;
                     if(depositData.length > 0) {
                         for(let index = 0; index < depositData.length; index++) {
-    
+
                             let _totalDeposit = depositData[index].amount;
                             let tokenAddress = depositData[index].tokenAddress;
                             _totalDeposit = getFormattedValue({rawValue: _totalDeposit, chainId, tokenAddress})
@@ -142,7 +142,7 @@ function getDailyDepositsUSD(chainId, startTime, endTime, version) {
             }`
 
             let data = await executeQuery(chainId, query, version);
-            
+
             let volumeMap = {};
             if(data && data.data && data.data.volumePerDays) {
                 let aggregateData = data.data.volumePerDays;

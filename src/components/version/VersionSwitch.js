@@ -8,7 +8,7 @@ import { updateRootState } from "../../redux";
 const useStyles = makeStyles((theme) => ({
     formControl: {
         marginRight: "8px",
-        width: "76px",
+        width: "80px",
         [theme.breakpoints.between("xs", "sm")]: {
             marginRight: "0px",
             marginBottom: "8px",
@@ -50,7 +50,7 @@ export default function VersionSwitch() {
                 }}
             >
                 <MenuItem value="v1">v1</MenuItem>
-                <MenuItem value="v2">v2</MenuItem>
+                <MenuItem value="v1.1">v1.1</MenuItem>
             </Select>
         </FormControl>
     );
