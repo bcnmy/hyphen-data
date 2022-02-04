@@ -28,8 +28,20 @@ function getFormattedValue({rawValue, chainId, tokenSymbol, tokenAddress, decima
 function getDollarValue(amount, tokenAddress) {
     if(tokenAddress && isEthereumAddress(tokenAddress)){
         return amount*4100
+    } else if (tokenAddress && isBicoAddress(tokenAddress)) {
+        return amount*2
     }
     return amount;
+}
+
+function isBicoAddress(tokenAddress) {
+    const bicoDetails = config.tokensMap.BICO;
+    for (let chainId in bicoDetails) {
+        if (bicoDetails[chainId].address.toLowerCase() === tokenAddress.toLowerCase()) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function isEthereumAddress(tokenAddress) {
