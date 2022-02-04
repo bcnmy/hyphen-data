@@ -192,7 +192,7 @@ export default function AverageTransferTime(props) {
                 className={classes.chainInfoContainer}
                 alignItems="center"
             >
-                <Grid item xs={12} lg={5} style={{padding: "0 0 0 6px"}}>
+                <Grid item xs={12} lg={5} style={{padding: "0"}}>
                     {sourceChains && selectedFromChain && (
                         <FormControl
                             variant="outlined"
@@ -240,7 +240,7 @@ export default function AverageTransferTime(props) {
                     />
                 </Grid>
 
-                <Grid item xs={12} lg={5} style={{padding: "0 6px 0 0"}}>
+                <Grid item xs={12} lg={5} style={{padding: "0"}}>
                     {destinationChains && selectedToChain && (
                         <FormControl
                             variant="outlined"
