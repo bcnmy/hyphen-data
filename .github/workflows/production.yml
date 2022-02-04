@@ -23,7 +23,7 @@ jobs:
       - name: Generate build
         run: |
           npm install
-          npm run build
+          npm run build:prod
         env:
           CI: false
           NODE_OPTIONS: --max_old_space_size=4096
@@ -40,4 +40,3 @@ jobs:
         run: |
           aws s3 sync build s3://${{ secrets.S3_BUCKET_NAME }}
           aws cloudfront create-invalidation --distribution-id ${{ secrets.S3_CF_ID }} --paths /
-          
